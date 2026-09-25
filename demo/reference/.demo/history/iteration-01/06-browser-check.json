@@ -1,0 +1,66 @@
+{
+  "recordedAt": "2026-09-25T23:02:31.380Z",
+  "before": "http://127.0.0.1:4311",
+  "after": "http://127.0.0.1:4310",
+  "browser": "154.0.8037.58",
+  "checks": [
+    {
+      "name": "Before: two concurrent identical requests create two orders",
+      "passed": true,
+      "details": {
+        "requests": 2,
+        "orders": 2,
+        "traces": [
+          "응답 1 · 201 · ORD-0003 · 새 주문 생성",
+          "응답 2 · 201 · ORD-0004 · 새 주문 생성"
+        ]
+      }
+    },
+    {
+      "name": "After: two concurrent identical requests create one order and show replay",
+      "passed": true,
+      "details": {
+        "requests": 2,
+        "orders": 1,
+        "traces": [
+          "응답 1 · 201 · ORD-0001 · 새 주문 생성",
+          "응답 2 · 200 · ORD-0001 · 기존 주문 결과 재사용"
+        ]
+      }
+    },
+    {
+      "name": "A legitimate separate new order still creates a second order",
+      "passed": true,
+      "details": {
+        "requests": 3,
+        "orders": 2
+      }
+    },
+    {
+      "name": "Retrying the latest order does not add another order",
+      "passed": true
+    },
+    {
+      "name": "Normal button suppresses overlapping duplicate clicks",
+      "passed": true
+    },
+    {
+      "name": "A separate new order can be the first action without false expected counts",
+      "passed": true
+    },
+    {
+      "name": "Service errors are visible and controls recover",
+      "passed": false,
+      "error": "expect(locator).not.toHaveAttribute(expected) failed\n\nLocator:  locator('#result-banner')\nExpected: not \"ok\"\nReceived: \"ok\"\nTimeout:  5000ms\n\nCall log:\n  - Expect \"not toHaveAttribute\" locator('#result-banner') with timeout 5000ms\n  - waiting for locator('#result-banner')\n    14 × locator resolved to <div data-state=\"ok\" id=\"result-banner\" class=\"result-banner\">…</div>\n       - unexpected value \"ok\"\n"
+    }
+  ],
+  "screenshots": [
+    "presentation/assets/01-before.png",
+    "presentation/assets/02-after.png",
+    "presentation/assets/03-new-order.png"
+  ],
+  "realPayments": false,
+  "sourceDigest": "06d7e84f2f987c8fe8ab1842238988c5cf1a581cdc7ef8e893616066e580efc1",
+  "completedAt": "2026-09-25T23:02:42.113Z",
+  "passed": false
+}

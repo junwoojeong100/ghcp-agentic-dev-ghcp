@@ -1,0 +1,16 @@
+{
+  "kind": "rehearsal-scope-approval",
+  "by": "preparation-controller",
+  "note": "Rehearsal only: inspected the actual plan; four-file boundary, duplicate retries, legitimate new orders and local-only limits accepted for this synthetic demonstration.",
+  "recordedAt": "2026-09-25T22:55:08.154Z",
+  "planHash": "fe23f19460ae605d9c0f3052c9209be232d479e15b2f55527e3fb8090cfaf45c",
+  "requestHash": "d3b5f0298290d8d356ef89d5c48aadd0b96a7e9091c93d9667a94fe3b0c7d502",
+  "baselineCommit": "122d292ebc0be6424151601e89930d01aca0683e",
+  "allowedFiles": [
+    "src/app.mjs",
+    "public/index.html",
+    "public/app.mjs",
+    "tests/app.test.mjs"
+  ],
+  "disclaimer": "Local demonstration record only; not an authenticated organizational approval."
+}

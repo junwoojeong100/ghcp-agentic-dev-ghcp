@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Evidence Desk · Agentic Development</title>
+  <link rel="icon" href="data:,">
+  <style>
+    :root{font-family:"Apple SD Gothic Neo","Malgun Gothic","Segoe UI",sans-serif;color:#dce2f2;background:#0c1120;font-synthesis:none}
+    *{box-sizing:border-box}body{margin:0}a{color:inherit;text-decoration:none}button{font:inherit;cursor:pointer}
+    header{height:76px;border-bottom:1px solid #293045;display:flex;align-items:center;justify-content:space-between;padding:0 5%}.wordmark{font-size:18px;font-weight:700;letter-spacing:-.3px}.wordmark span{font-weight:400;color:#778198;margin-left:12px}.badge{font-size:10px;letter-spacing:1.3px;color:#d4beff;border:1px solid #594575;border-radius:6px;padding:7px 10px}header a{font-size:13px;color:#b6c1dc}
+    main{max-width:1440px;padding:36px 56px 24px;margin:auto}.eyebrow{color:#a894d1;font-size:11px;letter-spacing:1.8px;font-weight:700}
+    .heading{display:flex;justify-content:space-between;align-items:end;margin:13px 0 26px}h1{font-size:32px;letter-spacing:-1px;margin:0 0 9px}h1 span{color:#aa91e4}.subtitle{font-size:14px;color:#8c98b0;margin:0}.approval{padding:12px 18px;border-radius:8px;background:#342719;color:#eac595;font-size:13px;border:1px solid #624e30}
+    .metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.metric{background:#151d30;border:1px solid #28324b;border-radius:10px;padding:17px 20px}.metric span{display:block;color:#909db4;font-size:12px}.metric strong{font-size:26px;display:block;margin:8px 0 4px;letter-spacing:-.5px}.metric small{font-size:11px;color:#727f99}.mint{color:#76daba}.lilac{color:#b9a0f5}
+    .flow{display:flex;align-items:center;gap:10px;margin:23px 0}.flow span{background:#141e32;border:1px solid #2d3952;border-radius:6px;padding:9px 14px;font-size:12px}.flow i{font-style:normal;color:#53607c}.flow .human{color:#f2c58d;border-color:#6a5032;background:#2b221d}.flow .agent{color:#bda3f0}
+    .workspace{display:grid;grid-template-columns:minmax(0,1fr) 286px;gap:20px}.evidence{border-radius:12px;overflow:hidden;border:1px solid #303b56;background:#111a2b}.tabs{display:flex;gap:3px;padding:12px 16px;border-bottom:1px solid #303b56;background:#182237}.tabs button{border:0;color:#94a0b8;background:none;padding:9px 15px;border-radius:5px;font-size:12px}.tabs button.active{color:white;background:#554078}.artifact-head{display:flex;justify-content:space-between;padding:18px 22px 8px;color:#8392ad;font:11px ui-monospace,Menlo,monospace}.artifact-head strong{color:#bac6dc;font-weight:500}
+    pre{white-space:pre-wrap;word-break:break-word;font-family:"Apple SD Gothic Neo","Malgun Gothic",ui-monospace,monospace;line-height:1.65;font-size:13px;padding:8px 22px 22px;margin:0;max-height:395px;overflow:auto;color:#c4cee3;min-height:330px}
+    aside{display:flex;flex-direction:column;gap:14px}.side-card{border:1px solid #303b56;border-radius:10px;padding:20px;background:#151d30}.side-card h2{font-size:14px;margin:0 0 14px}.side-card p{font-size:12px;line-height:1.7;color:#93a0b8;margin:9px 0}.side-card strong{color:#e4c28f}.tag{display:inline-block;padding:5px 8px;border-radius:5px;background:#243a35;color:#85d5ba;font-size:10px;font-weight:700}.side-card code{display:block;font:11px ui-monospace,Menlo,monospace;white-space:pre-wrap;word-break:break-all;color:#c1b0e4;line-height:1.7}.notice{color:#8e9bb4;font-size:11px;margin-top:20px;display:flex;justify-content:space-between;gap:15px}.error{background:#542934;color:#ffd0d0;padding:12px;border-radius:6px;font-size:12px;margin:15px 0;display:none}
+    @media(max-width:1000px){main{padding:25px 20px}.workspace{grid-template-columns:1fr}aside{display:none}.flow{flex-wrap:wrap}.metrics{grid-template-columns:repeat(2,1fr)}.heading{display:block}.approval{display:inline-block;margin-top:15px}.tabs button{padding:9px}}
+  </style>
+</head>
+<body>
+<header><div class="wordmark">Agentic Development<span>/ Evidence Desk</span></div><span class="badge" id="mode">LOADING</span><a href="/">데모 앱 열기 ↗</a></header>
+<main>
+  <div class="eyebrow">GITHUB COPILOT CLI · ORDER-001</div>
+  <div class="heading"><div><h1>고객 문제에서, <span>검토 가능한 개선까지.</span></h1><p class="subtitle">문제 재현 → 해결 계획 → 서비스 변경 → 재발 방지 확인 → 사람의 출시 판단</p></div><div class="approval" id="approval">최종 출시 판단 대기</div></div>
+  <div class="metrics">
+    <div class="metric"><span>해결할 고객 문제</span><strong>중복 주문</strong><small>재전송을 별도 주문으로 처리</small></div>
+    <div class="metric"><span>완료 기준</span><strong class="lilac">2회 요청 → 1건</strong><small>별도의 새 주문은 그대로 허용</small></div>
+    <div class="metric"><span>업무 조건 검증</span><strong class="mint" id="tests">—</strong><small id="test-note">아직 실행하지 않았습니다.</small></div>
+    <div class="metric"><span>사람의 통제 지점</span><strong>2 checkpoints</strong><small>구현 전 범위 · 검토 후 최종 판단</small></div>
+  </div>
+  <div class="flow"><span class="agent">계획 Agent</span><i>→</i><span class="human">범위 승인</span><i>→</i><span class="agent">구현 Agent</span><i>→</i><span>실제 테스트</span><i>→</i><span class="agent">검토 Agent</span><i>→</i><span class="human">최종 판단</span></div>
+  <div class="error" id="error"></div>
+  <div class="workspace">
+    <section class="evidence">
+      <nav class="tabs" aria-label="업무 근거">
+        <button data-tab="request">01 고객 문제</button><button data-tab="plan">02 해결 계획</button><button data-tab="diff">03 서비스 변경</button><button data-tab="tests">04 재발 방지</button><button data-tab="rework">재작업 기록</button><button data-tab="review">05 출시 검토</button><button data-tab="gates">06 통제</button>
+      </nav>
+      <div class="artifact-head"><strong id="artifact-name"></strong><span id="evidence-label"></span></div>
+      <pre id="artifact"></pre>
+    </section>
+    <aside>
+      <div class="side-card"><span class="tag" id="freshness">EVIDENCE</span><h2 style="margin-top:15px">검토 의견 ≠ 최종 승인</h2><p id="gate-note"></p><p><strong>이 데모는 승인 대기에서 멈춥니다.</strong><br>PR 생성·병합·배포를 수행하지 않습니다.</p></div>
+      <div class="side-card"><h2>역할 사이에 넘기는 것</h2><code>REQUEST.md<br>  ↓<br>01-plan.md<br>  ↓<br>02-diff.patch + 03-tests.tap<br>  ↓<br>04-review.md</code><p>A2A 프로토콜 연결이 아닌,<br>파일 기반 역할별 작업 인계입니다.</p></div>
+    </aside>
+  </div>
+  <div class="notice"><span>발표용 보조 UI · GitHub/Copilot 제품 화면 아님 · 로컬 승인 기록은 조직 인증/보호 규칙이 아님</span><span id="recorded"></span></div>
+</main>
+<script type="module">
+  let evidence;
+  let tab = new URL(location.href).searchParams.get('tab') || 'request';
+  const $ = (selector) => document.querySelector(selector);
+  const labels = { request: 'REQUEST.md', plan: '.demo/01-plan.md', diff: '.demo/02-diff.patch', tests: '.demo/03-tests.tap', rework: 'history/iteration-01/04-review.md · 최초 검토 / 수정 전', review: '.demo/04-review.md', gates: 'Local control records · NOT organizational approval' };
+  function render() {
+    if (!evidence) return;
+    const { state, artifacts, saved, currentDigest } = evidence;
+    const verified = state.verification;
+    const fresh = Boolean(verified?.passed && currentDigest === verified.sourceDigest);
+    $('#mode').textContent = saved ? 'SAVED REHEARSAL · 사전 실행 결과' : 'LIVE WORKSPACE · 로컬 실행';
+    $('#approval').textContent = state.decision ? (state.decision.decision === 'approve' ? '로컬 데모 승인 기록 · 출시 없음' : '재작업 요청') : '최종 출시 판단 대기';
+    const suites = verified?.suites || [];
+    const passed = suites.reduce((sum, suite) => sum + suite.pass, 0);
+    const total = suites.reduce((sum, suite) => sum + suite.tests, 0);
+    $('#tests').textContent = verified ? `${passed} / ${total}` : '실행 전';
+    $('#test-note').textContent = verified ? (fresh ? '현재 소스와 일치 · 브라우저 검증은 별도' : '실패 또는 소스 변경 · 다시 검증 필요') : '아직 실행하지 않았습니다.';
+    $('#freshness').textContent = fresh ? 'SOURCE HASH MATCHED' : 'NOT YET VERIFIED';
+    $('#gate-note').textContent = state.planApproval ? (state.planApproval.kind === 'rehearsal-scope-approval' ? '범위 승인: 준비 과정의 리허설 기록입니다. 실제 조직의 승인으로 해석하지 않습니다.' : `범위 승인 기록: ${state.planApproval.by}. 로컬 자기기입 기록이며 조직 인증을 대신하지 않습니다.`) : '범위 승인 전에는 구현 단계로 진행할 수 없습니다.';
+    $('#recorded').textContent = state.review ? `검토 기록 ${state.review.completedAt.slice(0, 10)}` : '';
+    const content = {
+      request: evidence.request, plan: artifacts['01-plan.md'],
+      diff: artifacts['02-diff.patch'], tests: artifacts['03-tests.tap'], rework: artifacts['first-review.md'], review: artifacts['04-review.md'],
+      gates: JSON.stringify({ scopeApproval: state.planApproval, reviewRecommendation: state.review?.recommendation ?? null, finalDecision: state.decision, actualMerge: false, actualDeployment: false }, null, 2),
+    };
+    if (!(tab in content)) tab = 'request';
+    $('#artifact-name').textContent = labels[tab];
+    $('#evidence-label').textContent = saved ? '저장된 실제 리허설 산출물' : '현재 실행의 산출물';
+    $('#artifact').textContent = content[tab] || '이 단계는 아직 실행하지 않았습니다.';
+    document.querySelectorAll('[data-tab]').forEach((button) => button.classList.toggle('active', button.dataset.tab === tab));
+    $('#error').style.display = state.lastError ? 'block' : 'none';
+    $('#error').textContent = state.lastError || '';
+  }
+  document.querySelectorAll('[data-tab]').forEach((button) => button.addEventListener('click', () => {
+    tab = button.dataset.tab;
+    const url = new URL(location.href);
+    url.searchParams.set('tab', tab);
+    history.replaceState(null, '', url);
+    render();
+  }));
+  async function refresh() {
+    try {
+      const response = await fetch('/__demo/evidence');
+      if (!response.ok) throw new Error(`Evidence request failed: HTTP ${response.status}`);
+      evidence = await response.json();
+      render();
+    } catch (error) {
+      $('#error').style.display = 'block';
+      $('#error').textContent = `근거를 불러오지 못했습니다: ${error.message}`;
+    }
+  }
+  await refresh();
+  setInterval(refresh, 3000);
+</script>
+</body>
+</html>

@@ -1,0 +1,39 @@
+{
+  "startedAt": "2026-09-25T23:10:20.894Z",
+  "browser": "154.0.8037.58",
+  "clips": [
+    {
+      "scene": "02-before",
+      "path": "video/recordings/02-before.webm",
+      "recordedAt": "2026-09-25T23:11:00.579Z",
+      "plannedSeconds": 37
+    },
+    {
+      "scene": "04-plan",
+      "path": "video/recordings/04-plan.webm",
+      "recordedAt": "2026-09-25T23:11:38.142Z",
+      "plannedSeconds": 37
+    },
+    {
+      "scene": "06-tests",
+      "path": "video/recordings/06-tests.webm",
+      "recordedAt": "2026-09-25T23:12:21.549Z",
+      "plannedSeconds": 43
+    },
+    {
+      "scene": "07-after",
+      "path": "video/recordings/07-after.webm",
+      "recordedAt": "2026-09-25T23:13:06.026Z",
+      "plannedSeconds": 42
+    },
+    {
+      "scene": "08-review",
+      "path": "video/recordings/08-review.webm",
+      "recordedAt": "2026-09-25T23:13:36.763Z",
+      "plannedSeconds": 30
+    }
+  ],
+  "note": "Actual local browser recordings. No simulated Copilot responses or real payments.",
+  "completedAt": "2026-09-25T23:13:36.764Z",
+  "complete": true
+}

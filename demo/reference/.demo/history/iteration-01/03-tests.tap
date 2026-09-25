@@ -1,0 +1,197 @@
+# Suite: repository
+TAP version 13
+# Subtest: a valid single order is created with the expected amount
+ok 1 - a valid single order is created with the expected amount
+  ---
+  duration_ms: 24.200375
+  type: 'test'
+  ...
+# Subtest: two distinct orders are both accepted
+ok 2 - two distinct orders are both accepted
+  ---
+  duration_ms: 21.488167
+  type: 'test'
+  ...
+# Subtest: invalid quantities are rejected
+ok 3 - invalid quantities are rejected
+  ---
+  duration_ms: 1.794792
+  type: 'test'
+  ...
+# Subtest: missing and malformed idempotency keys are rejected
+ok 4 - missing and malformed idempotency keys are rejected
+  ---
+  duration_ms: 7.049792
+  type: 'test'
+  ...
+# Subtest: a sequential retry reuses the completed order
+ok 5 - a sequential retry reuses the completed order
+  ---
+  duration_ms: 10.159958
+  type: 'test'
+  ...
+# Subtest: concurrent retries wait for and reuse one order
+ok 6 - concurrent retries wait for and reuse one order
+  ---
+  duration_ms: 9.44675
+  type: 'test'
+  ...
+# Subtest: reusing a completed key for different order content is rejected
+ok 7 - reusing a completed key for different order content is rejected
+  ---
+  duration_ms: 9.29175
+  type: 'test'
+  ...
+# Subtest: reusing an in-progress key for different order content is rejected
+ok 8 - reusing an in-progress key for different order content is rejected
+  ---
+  duration_ms: 104.33975
+  type: 'test'
+  ...
+# Subtest: an invalid order does not consume its idempotency key
+ok 9 - an invalid order does not consume its idempotency key
+  ---
+  duration_ms: 9.071917
+  type: 'test'
+  ...
+# Subtest: the same key is independent across checkouts
+ok 10 - the same key is independent across checkouts
+  ---
+  duration_ms: 15.232
+  type: 'test'
+  ...
+# Subtest: health check remains available
+ok 11 - health check remains available
+  ---
+  duration_ms: 1.036667
+  type: 'test'
+  ...
+# Subtest: unknown routes return 404
+ok 12 - unknown routes return 404
+  ---
+  duration_ms: 0.899375
+  type: 'test'
+  ...
+# Subtest: order lists are scoped to the checkout
+ok 13 - order lists are scoped to the checkout
+  ---
+  duration_ms: 7.538167
+  type: 'test'
+  ...
+1..13
+# tests 13
+# suites 0
+# pass 13
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 267.5925
+
+# Suite: acceptance
+TAP version 13
+# Subtest: AC2: sequential retries reuse the same order
+ok 1 - AC2: sequential retries reuse the same order
+  ---
+  duration_ms: 44.995292
+  type: 'test'
+  ...
+# Subtest: AC2: five simultaneous retries create exactly one order
+ok 2 - AC2: five simultaneous retries create exactly one order
+  ---
+  duration_ms: 36.476667
+  type: 'test'
+  ...
+# Subtest: AC3: same key with different quantity is rejected
+ok 3 - AC3: same key with different quantity is rejected
+  ---
+  duration_ms: 31.566833
+  type: 'test'
+  ...
+# Subtest: AC3: same key with different productId is rejected
+ok 4 - AC3: same key with different productId is rejected
+  ---
+  duration_ms: 29.78325
+  type: 'test'
+  ...
+# Subtest: AC3: conflicting concurrent payloads cannot overwrite an in-flight request
+ok 5 - AC3: conflicting concurrent payloads cannot overwrite an in-flight request
+  ---
+  duration_ms: 29.337792
+  type: 'test'
+  ...
+# Subtest: AC4: a separate new order remains possible
+ok 6 - AC4: a separate new order remains possible
+  ---
+  duration_ms: 57.106375
+  type: 'test'
+  ...
+# Subtest: AC4: identical keys in different checkout scopes are independent
+ok 7 - AC4: identical keys in different checkout scopes are independent
+  ---
+  duration_ms: 58.699834
+  type: 'test'
+  ...
+# Subtest: AC1: missing key is rejected before creating an order
+ok 8 - AC1: missing key is rejected before creating an order
+  ---
+  duration_ms: 2.270291
+  type: 'test'
+  ...
+# Subtest: AC1: short key is rejected before creating an order
+ok 9 - AC1: short key is rejected before creating an order
+  ---
+  duration_ms: 2.554542
+  type: 'test'
+  ...
+# Subtest: AC1: invalid characters key is rejected before creating an order
+ok 10 - AC1: invalid characters key is rejected before creating an order
+  ---
+  duration_ms: 1.927167
+  type: 'test'
+  ...
+# Subtest: AC1: too long key is rejected before creating an order
+ok 11 - AC1: too long key is rejected before creating an order
+  ---
+  duration_ms: 1.644583
+  type: 'test'
+  ...
+# Subtest: AC1: valid 8- and 80-character keys are accepted
+ok 12 - AC1: valid 8- and 80-character keys are accepted
+  ---
+  duration_ms: 57.324083
+  type: 'test'
+  ...
+# Subtest: AC5: invalid order {"quantity":0} does not consume a key
+ok 13 - AC5: invalid order {"quantity":0} does not consume a key
+  ---
+  duration_ms: 28.593917
+  type: 'test'
+  ...
+# Subtest: AC5: invalid order {"quantity":1.5} does not consume a key
+ok 14 - AC5: invalid order {"quantity":1.5} does not consume a key
+  ---
+  duration_ms: 29.87
+  type: 'test'
+  ...
+# Subtest: AC5: invalid order {"productId":"UNKNOWN"} does not consume a key
+ok 15 - AC5: invalid order {"productId":"UNKNOWN"} does not consume a key
+  ---
+  duration_ms: 29.415417
+  type: 'test'
+  ...
+# Subtest: AC5: health check and unknown-route behavior remain unchanged
+ok 16 - AC5: health check and unknown-route behavior remain unchanged
+  ---
+  duration_ms: 1.697125
+  type: 'test'
+  ...
+1..16
+# tests 16
+# suites 0
+# pass 16
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 491.596875

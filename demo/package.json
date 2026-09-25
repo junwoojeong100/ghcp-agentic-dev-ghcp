@@ -1,0 +1,11 @@
+{
+  "name": "copilot-agentic-development-demo",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "demo": "node scripts/workflow.mjs",
+    "test": "node --test tests/workflow.test.mjs",
+    "fallback": "node scripts/workflow.mjs serve reference"
+  }
+}

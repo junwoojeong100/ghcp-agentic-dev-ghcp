@@ -1,0 +1,32 @@
+{
+  "passed": true,
+  "durationSeconds": 300.021016,
+  "resolution": [
+    1920,
+    1080
+  ],
+  "videoCodec": "h264",
+  "pixelFormat": "yuv420p",
+  "audioCodec": "aac",
+  "audioSampleRate": 48000,
+  "captionCount": 37,
+  "actualRecordedScenes": 5,
+  "audioIntegratedLUFS": -18.03,
+  "audioTruePeakDBTP": -1.86,
+  "fileBytes": 10696707,
+  "frameReviewTimes": [
+    3,
+    29,
+    41,
+    70,
+    101,
+    145,
+    180,
+    196,
+    219,
+    241,
+    265,
+    287
+  ],
+  "note": "Five minutes is edited explanation time, not development elapsed time."
+}

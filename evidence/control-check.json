@@ -1,0 +1,25 @@
+{
+  "recordedAt": "2026-09-25T23:25:15.309Z",
+  "exitCode": 0,
+  "tests": 12,
+  "pass": 12,
+  "fail": 0,
+  "skipped": 0,
+  "cancelled": 0,
+  "passed": true,
+  "scope": "Controller unit tests with explicitly synthetic fixture plans; not Copilot conversation evidence.",
+  "checks": [
+    "workspace identifiers reject traversal and absolute paths",
+    "prepare never overwrites an existing workspace",
+    "implementation is blocked before scope approval",
+    "approval requires an explicit actor and reason",
+    "rehearsal approval is labeled and becomes invalid if the plan changes",
+    "the request cannot change silently after approval",
+    "scope check detects protected and newly added files",
+    "missing or failed tests block review",
+    "a source change invalidates previously recorded verification",
+    "final decision cannot bypass a missing review",
+    "JSONL extraction uses the actual final message and rejects missing evidence",
+    "TAP counts must exist and cannot silently default to success"
+  ]
+}

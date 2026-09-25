@@ -1,0 +1,14 @@
+{
+  "recordedAt": "2026-09-25T23:28:48.390313+00:00",
+  "passed": true,
+  "freshExtraction": true,
+  "runtimeDependenciesInstalled": false,
+  "referenceTests": "repository: 17/17 passing\nacceptance: 16/16 passing\n{\n  files: 59,\n  sourceDigest: '75fdf7cdc1f97375f8323728aa08172c3350b2b69376a7017c1e10288a158a93'\n}",
+  "httpChecks": [
+    "simultaneous duplicate yields one order",
+    "new key yields a second order",
+    "saved replay label",
+    "final human decision remains null",
+    "evidence desk responds"
+  ]
+}

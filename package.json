@@ -1,0 +1,13 @@
+{
+  "name": "agentic-development-presenter-kit",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "npm --prefix demo test",
+    "test:browser": "node tools/browser-check.mjs",
+    "deck": "python3 presentation/build_slides.py"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.63.0"
+  }
+}

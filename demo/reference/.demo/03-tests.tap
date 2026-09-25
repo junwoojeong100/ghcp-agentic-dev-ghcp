@@ -1,0 +1,221 @@
+# Suite: repository
+TAP version 13
+# Subtest: a valid single order is created with the expected amount
+ok 1 - a valid single order is created with the expected amount
+  ---
+  duration_ms: 22.65825
+  type: 'test'
+  ...
+# Subtest: two distinct orders are both accepted
+ok 2 - two distinct orders are both accepted
+  ---
+  duration_ms: 18.244958
+  type: 'test'
+  ...
+# Subtest: invalid quantities are rejected
+ok 3 - invalid quantities are rejected
+  ---
+  duration_ms: 1.514667
+  type: 'test'
+  ...
+# Subtest: missing and malformed idempotency keys are rejected
+ok 4 - missing and malformed idempotency keys are rejected
+  ---
+  duration_ms: 5.722292
+  type: 'test'
+  ...
+# Subtest: a sequential retry reuses the completed order
+ok 5 - a sequential retry reuses the completed order
+  ---
+  duration_ms: 9.064166
+  type: 'test'
+  ...
+# Subtest: concurrent retries wait for and reuse one order
+ok 6 - concurrent retries wait for and reuse one order
+  ---
+  duration_ms: 9.466333
+  type: 'test'
+  ...
+# Subtest: reusing a completed key for different order content is rejected
+ok 7 - reusing a completed key for different order content is rejected
+  ---
+  duration_ms: 8.977
+  type: 'test'
+  ...
+# Subtest: reusing an in-progress key for different order content is rejected
+ok 8 - reusing an in-progress key for different order content is rejected
+  ---
+  duration_ms: 102.829334
+  type: 'test'
+  ...
+# Subtest: an invalid order does not consume its idempotency key
+ok 9 - an invalid order does not consume its idempotency key
+  ---
+  duration_ms: 10.384208
+  type: 'test'
+  ...
+# Subtest: the same key is independent across checkouts
+ok 10 - the same key is independent across checkouts
+  ---
+  duration_ms: 16.430042
+  type: 'test'
+  ...
+# Subtest: health check remains available
+ok 11 - health check remains available
+  ---
+  duration_ms: 1.122583
+  type: 'test'
+  ...
+# Subtest: unknown routes return 404
+ok 12 - unknown routes return 404
+  ---
+  duration_ms: 1.038125
+  type: 'test'
+  ...
+# Subtest: order lists are scoped to the checkout
+ok 13 - order lists are scoped to the checkout
+  ---
+  duration_ms: 8.449333
+  type: 'test'
+  ...
+# Subtest: a failed request cannot be presented as a successful matching result
+ok 14 - a failed request cannot be presented as a successful matching result
+  ---
+  duration_ms: 0.16325
+  type: 'test'
+  ...
+# Subtest: mixed request outcomes are presented as partial even when the order count matches
+ok 15 - mixed request outcomes are presented as partial even when the order count matches
+  ---
+  duration_ms: 0.04575
+  type: 'test'
+  ...
+# Subtest: a list failure cannot overwrite a successful response with an ok result
+ok 16 - a list failure cannot overwrite a successful response with an ok result
+  ---
+  duration_ms: 0.03375
+  type: 'test'
+  ...
+# Subtest: only complete matching outcomes are presented as successful
+ok 17 - only complete matching outcomes are presented as successful
+  ---
+  duration_ms: 0.037875
+  type: 'test'
+  ...
+1..17
+# tests 17
+# suites 0
+# pass 17
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 257.1285
+
+# Suite: acceptance
+TAP version 13
+# Subtest: AC2: sequential retries reuse the same order
+ok 1 - AC2: sequential retries reuse the same order
+  ---
+  duration_ms: 43.680083
+  type: 'test'
+  ...
+# Subtest: AC2: five simultaneous retries create exactly one order
+ok 2 - AC2: five simultaneous retries create exactly one order
+  ---
+  duration_ms: 36.387459
+  type: 'test'
+  ...
+# Subtest: AC3: same key with different quantity is rejected
+ok 3 - AC3: same key with different quantity is rejected
+  ---
+  duration_ms: 30.544417
+  type: 'test'
+  ...
+# Subtest: AC3: same key with different productId is rejected
+ok 4 - AC3: same key with different productId is rejected
+  ---
+  duration_ms: 29.96575
+  type: 'test'
+  ...
+# Subtest: AC3: conflicting concurrent payloads cannot overwrite an in-flight request
+ok 5 - AC3: conflicting concurrent payloads cannot overwrite an in-flight request
+  ---
+  duration_ms: 30.870792
+  type: 'test'
+  ...
+# Subtest: AC4: a separate new order remains possible
+ok 6 - AC4: a separate new order remains possible
+  ---
+  duration_ms: 57.045125
+  type: 'test'
+  ...
+# Subtest: AC4: identical keys in different checkout scopes are independent
+ok 7 - AC4: identical keys in different checkout scopes are independent
+  ---
+  duration_ms: 58.43
+  type: 'test'
+  ...
+# Subtest: AC1: missing key is rejected before creating an order
+ok 8 - AC1: missing key is rejected before creating an order
+  ---
+  duration_ms: 2.048667
+  type: 'test'
+  ...
+# Subtest: AC1: short key is rejected before creating an order
+ok 9 - AC1: short key is rejected before creating an order
+  ---
+  duration_ms: 2.336792
+  type: 'test'
+  ...
+# Subtest: AC1: invalid characters key is rejected before creating an order
+ok 10 - AC1: invalid characters key is rejected before creating an order
+  ---
+  duration_ms: 2.291292
+  type: 'test'
+  ...
+# Subtest: AC1: too long key is rejected before creating an order
+ok 11 - AC1: too long key is rejected before creating an order
+  ---
+  duration_ms: 1.823584
+  type: 'test'
+  ...
+# Subtest: AC1: valid 8- and 80-character keys are accepted
+ok 12 - AC1: valid 8- and 80-character keys are accepted
+  ---
+  duration_ms: 57.818833
+  type: 'test'
+  ...
+# Subtest: AC5: invalid order {"quantity":0} does not consume a key
+ok 13 - AC5: invalid order {"quantity":0} does not consume a key
+  ---
+  duration_ms: 31.217375
+  type: 'test'
+  ...
+# Subtest: AC5: invalid order {"quantity":1.5} does not consume a key
+ok 14 - AC5: invalid order {"quantity":1.5} does not consume a key
+  ---
+  duration_ms: 34.677084
+  type: 'test'
+  ...
+# Subtest: AC5: invalid order {"productId":"UNKNOWN"} does not consume a key
+ok 15 - AC5: invalid order {"productId":"UNKNOWN"} does not consume a key
+  ---
+  duration_ms: 33.029542
+  type: 'test'
+  ...
+# Subtest: AC5: health check and unknown-route behavior remain unchanged
+ok 16 - AC5: health check and unknown-route behavior remain unchanged
+  ---
+  duration_ms: 3.912041
+  type: 'test'
+  ...
+1..16
+# tests 16
+# suites 0
+# pass 16
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 505.530792

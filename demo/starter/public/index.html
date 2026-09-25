@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Order Recovery Desk · 고객 문제에서 서비스 개선까지</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="/styles.css">
+  <script type="module" src="/app.mjs"></script>
+</head>
+<body>
+<header><a class="brand" href="/"><span class="mark">O</span> Order Recovery Desk</a><div class="header-links"><span class="local">SYNTHETIC DEMO</span><a href="/presenter">출시 판단 근거 ↗</a></div></header>
+<main>
+  <div class="eyebrow">ORDER-001 / CUSTOMER PROBLEM TO REVIEWABLE CHANGE</div>
+  <div class="page-heading"><div><h1>고객은 한 번 주문했는데.</h1><p>같은 요청이 다시 도착해도, 주문은 한 건만 만들어야 합니다.</p></div><span class="release">사람의 출시 판단 대기</span></div>
+  <section class="voice"><span class="voice-label">고객의 목소리</span><p>“화면이 멈춰서 한 번 더 눌렀더니,<br><strong>주문이 두 건 생겼어요.</strong>”</p><span class="voice-note">합성 고객 문의<br>실제 장애 사례 아님</span></section>
+  <div class="workspace">
+    <section class="customer-card">
+      <div class="section-label">01 · 고객의 화면</div><h2>모의 주문</h2>
+      <div class="product"><div class="product-icon"><svg viewBox="0 0 80 80" aria-hidden="true"><path d="M17 44V34a23 23 0 0 1 46 0v10" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round"/><rect x="10" y="37" width="16" height="27" rx="7" fill="currentColor"/><rect x="54" y="37" width="16" height="27" rx="7" fill="currentColor"/></svg></div><div><small>DEMO PRODUCT</small><strong>데모 헤드폰</strong><span>1개 · 129,000원</span></div></div>
+      <div class="order-rule"><span>이번 실험의 조건</span><strong>동일 고객 · 동일 상품 · 동일 주문 표식</strong><small>응답 지연을 모의 재현합니다. 실제 결제는 없습니다.</small></div>
+      <button id="send-once" class="primary">모의 주문 1회 전송</button>
+      <button id="send-twice" class="secondary">동일 요청 2회 동시 전송</button>
+      <button id="new-order" class="text-button">별도의 새 주문 보내기 ↗</button>
+      <p id="feedback" role="status" aria-live="polite">‘동일 요청 2회 동시 전송’으로 문제를 재현해 보세요.</p>
+      <div class="legend"><span>재전송 = 같은 주문을 다시 보냄</span><span>새 주문 = 다른 주문 표식을 사용</span></div>
+    </section>
+    <section class="result-card">
+      <div class="section-label">02 · 실제 서버 처리 결과</div><h2>시스템에는 몇 건이 생겼을까요?</h2>
+      <div class="metric-row"><div><span>보낸 요청</span><strong id="request-count">0<small>회</small></strong></div><span class="metric-arrow">→</span><div><span>생성된 모의 주문</span><strong id="order-count">0<small>건</small></strong></div></div>
+      <div id="result-banner" class="result-banner" data-state="idle"><strong id="result-title">실험 대기 중</strong><span id="result-detail">요청 수와 주문 수를 함께 확인합니다.</span></div>
+      <div class="list-label"><span>실제 생성된 주문</span><span>ORDER ID / AMOUNT</span></div>
+      <div id="orders" class="orders"><p class="empty">아직 주문이 없습니다.</p></div>
+      <div class="trace-label">응답 기록 <span>새 주문 / 기존 결과 재사용</span></div>
+      <div id="trace" class="trace"></div>
+    </section>
+  </div>
+  <footer>로컬 단일 프로세스 · 메모리 저장 · 실제 결제/배포 없음 · 이 결과만으로 운영 환경의 안전성을 보장하지 않습니다.</footer>
+</main>
+</body>
+</html>

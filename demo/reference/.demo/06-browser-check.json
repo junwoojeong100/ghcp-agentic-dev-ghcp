@@ -1,0 +1,77 @@
+{
+  "recordedAt": "2026-09-25T23:07:14.732Z",
+  "before": "http://127.0.0.1:4311",
+  "after": "http://127.0.0.1:4310",
+  "browser": "154.0.8037.58",
+  "checks": [
+    {
+      "name": "Before: two concurrent identical requests create two orders",
+      "passed": true,
+      "details": {
+        "requests": 2,
+        "orders": 2,
+        "traces": [
+          "응답 1 · 201 · ORD-0005 · 새 주문 생성",
+          "응답 2 · 201 · ORD-0006 · 새 주문 생성"
+        ]
+      }
+    },
+    {
+      "name": "After: two concurrent identical requests create one order and show replay",
+      "passed": true,
+      "details": {
+        "requests": 2,
+        "orders": 1,
+        "traces": [
+          "응답 1 · 201 · ORD-0001 · 새 주문 생성",
+          "응답 2 · 200 · ORD-0001 · 기존 주문 결과 재사용"
+        ]
+      }
+    },
+    {
+      "name": "A legitimate separate new order still creates a second order",
+      "passed": true,
+      "details": {
+        "requests": 3,
+        "orders": 2
+      }
+    },
+    {
+      "name": "Retrying the latest order does not add another order",
+      "passed": true
+    },
+    {
+      "name": "Normal button suppresses overlapping duplicate clicks",
+      "passed": true
+    },
+    {
+      "name": "A separate new order can be the first action without false expected counts",
+      "passed": true
+    },
+    {
+      "name": "Service errors are visible and controls recover",
+      "passed": true
+    },
+    {
+      "name": "Evidence desk distinguishes records from final human approval",
+      "passed": true
+    },
+    {
+      "name": "No uncaught browser JavaScript errors",
+      "passed": true
+    }
+  ],
+  "screenshots": [
+    "presentation/assets/01-before.png",
+    "presentation/assets/02-after.png",
+    "presentation/assets/03-new-order.png",
+    "presentation/assets/04-review.png",
+    "presentation/assets/05-verification.png",
+    "presentation/assets/07-rework.png",
+    "presentation/assets/06-plan.png"
+  ],
+  "realPayments": false,
+  "sourceDigest": "75fdf7cdc1f97375f8323728aa08172c3350b2b69376a7017c1e10288a158a93",
+  "completedAt": "2026-09-25T23:07:20.778Z",
+  "passed": true
+}

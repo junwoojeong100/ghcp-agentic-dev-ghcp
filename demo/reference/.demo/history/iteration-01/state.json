@@ -1,0 +1,181 @@
+{
+  "schema": 1,
+  "id": "rehearsal",
+  "createdAt": "2026-09-25T22:52:21.154Z",
+  "updatedAt": "2026-09-25T23:03:47.594Z",
+  "mode": "rehearsal",
+  "baselineCommit": "122d292ebc0be6424151601e89930d01aca0683e",
+  "baselineDigest": "8d24934a67d7f2fcd621e3310a82ebe7d31a9ea2516c83e83c6d4e54c4491828",
+  "allowedFiles": [
+    "src/app.mjs",
+    "public/index.html",
+    "public/app.mjs",
+    "tests/app.test.mjs"
+  ],
+  "plan": {
+    "hash": "fe23f19460ae605d9c0f3052c9209be232d479e15b2f55527e3fb8090cfaf45c",
+    "completedAt": "2026-09-25T22:53:00.342Z",
+    "cliVersion": "GitHub Copilot CLI 1.0.88.\nRun 'copilot update' to check for updates."
+  },
+  "planApproval": {
+    "kind": "rehearsal-scope-approval",
+    "by": "preparation-controller",
+    "note": "Rehearsal only: inspected the actual plan; four-file boundary, duplicate retries, legitimate new orders and local-only limits accepted for this synthetic demonstration.",
+    "recordedAt": "2026-09-25T22:55:08.154Z",
+    "planHash": "fe23f19460ae605d9c0f3052c9209be232d479e15b2f55527e3fb8090cfaf45c",
+    "requestHash": "d3b5f0298290d8d356ef89d5c48aadd0b96a7e9091c93d9667a94fe3b0c7d502",
+    "baselineCommit": "122d292ebc0be6424151601e89930d01aca0683e",
+    "allowedFiles": [
+      "src/app.mjs",
+      "public/index.html",
+      "public/app.mjs",
+      "tests/app.test.mjs"
+    ],
+    "disclaimer": "Local demonstration record only; not an authenticated organizational approval."
+  },
+  "implementation": {
+    "completedAt": "2026-09-25T22:57:09.461Z",
+    "changed": [
+      "public/app.mjs",
+      "public/index.html",
+      "src/app.mjs",
+      "tests/app.test.mjs"
+    ],
+    "sourceDigest": "06d7e84f2f987c8fe8ab1842238988c5cf1a581cdc7ef8e893616066e580efc1",
+    "cliVersion": "GitHub Copilot CLI 1.0.88.\nRun 'copilot update' to check for updates."
+  },
+  "verification": {
+    "recordedAt": "2026-09-25T23:00:29.058Z",
+    "sourceDigest": "06d7e84f2f987c8fe8ab1842238988c5cf1a581cdc7ef8e893616066e580efc1",
+    "node": "v22.16.0",
+    "changed": [
+      "public/app.mjs",
+      "public/index.html",
+      "src/app.mjs",
+      "tests/app.test.mjs"
+    ],
+    "scopePassed": true,
+    "browserVerified": false,
+    "note": "Repository and HTTP checks may pass, but a separate browser check failed. Read 06-browser-check.json.",
+    "suites": [
+      {
+        "name": "repository",
+        "exitCode": 0,
+        "tests": 13,
+        "pass": 13,
+        "fail": 0,
+        "skipped": 0,
+        "cancelled": 0
+      },
+      {
+        "name": "acceptance",
+        "exitCode": 0,
+        "tests": 16,
+        "pass": 16,
+        "fail": 0,
+        "skipped": 0,
+        "cancelled": 0
+      }
+    ],
+    "passed": true,
+    "browserRecordedAt": "2026-09-25T23:02:31.380Z"
+  },
+  "review": {
+    "recommendation": "CHANGES_REQUESTED",
+    "sourceDigest": "06d7e84f2f987c8fe8ab1842238988c5cf1a581cdc7ef8e893616066e580efc1",
+    "hash": "e04a3e084ea8bb01be95d69186f5a2765032e426724dd8cff323fe7035f41913",
+    "completedAt": "2026-09-25T23:01:20.694Z",
+    "cliVersion": "GitHub Copilot CLI 1.0.88.\nRun 'copilot update' to check for updates."
+  },
+  "decision": null,
+  "lastError": "Browser check failed; inspect the recorded evidence.",
+  "baselineTests": {
+    "recordedAt": "2026-09-25T22:52:22.013Z",
+    "suites": [
+      {
+        "name": "repository",
+        "exitCode": 0,
+        "tests": 6,
+        "pass": 6,
+        "fail": 0,
+        "skipped": 0,
+        "cancelled": 0
+      },
+      {
+        "name": "acceptance",
+        "exitCode": 1,
+        "tests": 16,
+        "pass": 7,
+        "fail": 9,
+        "skipped": 0,
+        "cancelled": 0
+      }
+    ]
+  },
+  "browserVerification": {
+    "recordedAt": "2026-09-25T23:02:31.380Z",
+    "before": "http://127.0.0.1:4311",
+    "after": "http://127.0.0.1:4310",
+    "browser": "154.0.8037.58",
+    "checks": [
+      {
+        "name": "Before: two concurrent identical requests create two orders",
+        "passed": true,
+        "details": {
+          "requests": 2,
+          "orders": 2,
+          "traces": [
+            "응답 1 · 201 · ORD-0003 · 새 주문 생성",
+            "응답 2 · 201 · ORD-0004 · 새 주문 생성"
+          ]
+        }
+      },
+      {
+        "name": "After: two concurrent identical requests create one order and show replay",
+        "passed": true,
+        "details": {
+          "requests": 2,
+          "orders": 1,
+          "traces": [
+            "응답 1 · 201 · ORD-0001 · 새 주문 생성",
+            "응답 2 · 200 · ORD-0001 · 기존 주문 결과 재사용"
+          ]
+        }
+      },
+      {
+        "name": "A legitimate separate new order still creates a second order",
+        "passed": true,
+        "details": {
+          "requests": 3,
+          "orders": 2
+        }
+      },
+      {
+        "name": "Retrying the latest order does not add another order",
+        "passed": true
+      },
+      {
+        "name": "Normal button suppresses overlapping duplicate clicks",
+        "passed": true
+      },
+      {
+        "name": "A separate new order can be the first action without false expected counts",
+        "passed": true
+      },
+      {
+        "name": "Service errors are visible and controls recover",
+        "passed": false,
+        "error": "expect(locator).not.toHaveAttribute(expected) failed\n\nLocator:  locator('#result-banner')\nExpected: not \"ok\"\nReceived: \"ok\"\nTimeout:  5000ms\n\nCall log:\n  - Expect \"not toHaveAttribute\" locator('#result-banner') with timeout 5000ms\n  - waiting for locator('#result-banner')\n    14 × locator resolved to <div data-state=\"ok\" id=\"result-banner\" class=\"result-banner\">…</div>\n       - unexpected value \"ok\"\n"
+      }
+    ],
+    "screenshots": [
+      "presentation/assets/01-before.png",
+      "presentation/assets/02-after.png",
+      "presentation/assets/03-new-order.png"
+    ],
+    "realPayments": false,
+    "sourceDigest": "06d7e84f2f987c8fe8ab1842238988c5cf1a581cdc7ef8e893616066e580efc1",
+    "completedAt": "2026-09-25T23:02:42.113Z",
+    "passed": false
+  }
+}

@@ -1,0 +1,340 @@
+diff --git a/public/app.mjs b/public/app.mjs
+index 6eab86f..5adfeb4 100644
+--- a/public/app.mjs
++++ b/public/app.mjs
+@@ -2,9 +2,12 @@ const $ = (selector) => document.querySelector(selector);
+ const checkoutId = crypto.randomUUID();
+ let requestKey = crypto.randomUUID();
+ let requestCount = 0;
+-let expectedOrders = 1;
++let expectedOrders = 0;
++let submitting = false;
++const submittedKeys = new Set();
+ const results = [];
+ const money = (value) => `${value.toLocaleString('ko-KR')}원`;
++const buttons = ['#send-once', '#send-twice', '#new-order'].map($);
+ 
+ function setCount(selector, count, suffix) {
+   $(selector).replaceChildren(document.createTextNode(String(count)));
+@@ -16,19 +19,40 @@ function setCount(selector, count, suffix) {
+ async function send(key) {
+   requestCount += 1;
+   setCount('#request-count', requestCount, '회');
+-  const response = await fetch('/api/orders', {
+-    method: 'POST', headers: { 'content-type': 'application/json', 'Idempotency-Key': key },
+-    body: JSON.stringify({ checkoutId, productId: 'DEMO-HEADSET', quantity: 1 }),
+-  });
+-  const body = await response.json();
++  let response;
++  try {
++    response = await fetch('/api/orders', {
++      method: 'POST', headers: { 'content-type': 'application/json', 'Idempotency-Key': key },
++      body: JSON.stringify({ checkoutId, productId: 'DEMO-HEADSET', quantity: 1 }),
++    });
++  } catch (error) {
++    throw new Error(`주문 요청 실패: ${error.message}`);
++  }
++  let body;
++  try {
++    body = await response.json();
++  } catch {
++    throw new Error(`주문 처리 실패: HTTP ${response.status} 응답을 읽을 수 없습니다.`);
++  }
+   if (!response.ok) throw new Error(`주문 처리 실패: ${body.error?.code ?? response.status}`);
+   results.push({ status: response.status, ...body });
+ }
+ 
+ async function render() {
+-  const response = await fetch(`/api/orders?checkoutId=${encodeURIComponent(checkoutId)}`);
++  let response;
++  try {
++    response = await fetch(`/api/orders?checkoutId=${encodeURIComponent(checkoutId)}`);
++  } catch (error) {
++    throw new Error(`주문 목록 조회 실패: ${error.message}`);
++  }
+   if (!response.ok) throw new Error(`주문 목록 조회 실패: HTTP ${response.status}`);
+-  const { items, total } = await response.json();
++  let items;
++  let total;
++  try {
++    ({ items, total } = await response.json());
++  } catch {
++    throw new Error('주문 목록 조회 실패: 응답을 읽을 수 없습니다.');
++  }
+   setCount('#order-count', total, '건');
+   $('#orders').replaceChildren();
+   for (const order of items) {
+@@ -47,7 +71,8 @@ async function render() {
+   for (const [index, result] of results.entries()) {
+     const line = document.createElement('div');
+     line.className = 'trace-row';
+-    line.textContent = `응답 ${index + 1} · ${result.status} · ${result.order.id} · 새 주문 생성`;
++    const outcome = result.replayed ? '기존 주문 결과 재사용' : '새 주문 생성';
++    line.textContent = `응답 ${index + 1} · ${result.status} · ${result.order.id} · ${outcome}`;
+     $('#trace').append(line);
+   }
+   const duplicate = total > expectedOrders;
+@@ -57,19 +82,32 @@ async function render() {
+ }
+ 
+ async function submit(count, newOrder = false) {
++  if (submitting) return;
++  submitting = true;
+   if (newOrder) {
+     requestKey = crypto.randomUUID();
++  }
++  if (!submittedKeys.has(requestKey)) {
++    submittedKeys.add(requestKey);
+     expectedOrders += 1;
+   }
++  $('#order-controls').setAttribute('aria-busy', 'true');
++  for (const button of buttons) button.disabled = true;
+   $('#feedback').textContent = '서버 응답을 기다리는 중입니다…';
+   delete $('#feedback').dataset.error;
+   try {
+-    await Promise.all(Array.from({ length: count }, () => send(requestKey)));
++    const outcomes = await Promise.allSettled(Array.from({ length: count }, () => send(requestKey)));
+     await render();
++    const failure = outcomes.find((outcome) => outcome.status === 'rejected');
++    if (failure) throw failure.reason;
+     $('#feedback').textContent = '처리 결과를 확인하세요. 실제 결제는 실행하지 않았습니다.';
+   } catch (error) {
+     $('#feedback').textContent = error.message;
+     $('#feedback').dataset.error = 'true';
++  } finally {
++    submitting = false;
++    $('#order-controls').setAttribute('aria-busy', 'false');
++    for (const button of buttons) button.disabled = false;
+   }
+ }
+ 
+diff --git a/public/index.html b/public/index.html
+index 516e4ce..ca8864a 100644
+--- a/public/index.html
++++ b/public/index.html
+@@ -15,14 +15,14 @@
+   <div class="page-heading"><div><h1>고객은 한 번 주문했는데.</h1><p>같은 요청이 다시 도착해도, 주문은 한 건만 만들어야 합니다.</p></div><span class="release">사람의 출시 판단 대기</span></div>
+   <section class="voice"><span class="voice-label">고객의 목소리</span><p>“화면이 멈춰서 한 번 더 눌렀더니,<br><strong>주문이 두 건 생겼어요.</strong>”</p><span class="voice-note">합성 고객 문의<br>실제 장애 사례 아님</span></section>
+   <div class="workspace">
+-    <section class="customer-card">
++    <section id="order-controls" class="customer-card" aria-busy="false">
+       <div class="section-label">01 · 고객의 화면</div><h2>모의 주문</h2>
+       <div class="product"><div class="product-icon"><svg viewBox="0 0 80 80" aria-hidden="true"><path d="M17 44V34a23 23 0 0 1 46 0v10" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round"/><rect x="10" y="37" width="16" height="27" rx="7" fill="currentColor"/><rect x="54" y="37" width="16" height="27" rx="7" fill="currentColor"/></svg></div><div><small>DEMO PRODUCT</small><strong>데모 헤드폰</strong><span>1개 · 129,000원</span></div></div>
+       <div class="order-rule"><span>이번 실험의 조건</span><strong>동일 고객 · 동일 상품 · 동일 주문 표식</strong><small>응답 지연을 모의 재현합니다. 실제 결제는 없습니다.</small></div>
+-      <button id="send-once" class="primary">모의 주문 1회 전송</button>
+-      <button id="send-twice" class="secondary">동일 요청 2회 동시 전송</button>
+-      <button id="new-order" class="text-button">별도의 새 주문 보내기 ↗</button>
+-      <p id="feedback" role="status" aria-live="polite">‘동일 요청 2회 동시 전송’으로 문제를 재현해 보세요.</p>
++      <button id="send-once" class="primary" type="button">모의 주문 1회 전송</button>
++      <button id="send-twice" class="secondary" type="button">동일 요청 2회 동시 전송</button>
++      <button id="new-order" class="text-button" type="button">별도의 새 주문 보내기 ↗</button>
++      <p id="feedback" role="status" aria-live="polite" aria-atomic="true">‘동일 요청 2회 동시 전송’으로 문제를 재현해 보세요.</p>
+       <div class="legend"><span>재전송 = 같은 주문을 다시 보냄</span><span>새 주문 = 다른 주문 표식을 사용</span></div>
+     </section>
+     <section class="result-card">
+diff --git a/src/app.mjs b/src/app.mjs
+index ec05a79..d74e15b 100644
+--- a/src/app.mjs
++++ b/src/app.mjs
+@@ -32,6 +32,7 @@ async function readOrder(req) {
+ 
+ export function createApp({ processingDelayMs = 350 } = {}) {
+   const orders = [];
++  const requestsByCheckout = new Map();
+   let sequence = 0;
+ 
+   async function createOrder(input) {
+@@ -58,14 +59,58 @@ export function createApp({ processingDelayMs = 350 } = {}) {
+       json(res, 200, { items, total: items.length }); return;
+     }
+     if (req.method === 'POST' && url.pathname === '/api/orders') {
++      const key = req.headers['idempotency-key'];
++      if (!validId(key)) {
++        json(res, 400, {
++          error: {
++            code: 'INVALID_IDEMPOTENCY_KEY',
++            message: 'Idempotency-Key must be 8 to 80 letters, numbers, underscores, or hyphens',
++          },
++        });
++        return;
++      }
+       let input;
+       try {
+         input = await readOrder(req);
+       } catch (error) {
+         json(res, 400, { error: { code: 'INVALID_ORDER', message: error.message } }); return;
+       }
+-      const order = await createOrder(input);
+-      json(res, 201, { order, replayed: false }); return;
++
++      let checkoutRequests = requestsByCheckout.get(input.checkoutId);
++      if (!checkoutRequests) {
++        checkoutRequests = new Map();
++        requestsByCheckout.set(input.checkoutId, checkoutRequests);
++      }
++
++      const existing = checkoutRequests.get(key);
++      if (existing) {
++        if (existing.productId !== input.productId || existing.quantity !== input.quantity) {
++          json(res, 409, {
++            error: {
++              code: 'IDEMPOTENCY_CONFLICT',
++              message: 'Idempotency-Key was already used for a different order',
++            },
++          });
++          return;
++        }
++        const order = await existing.promise;
++        json(res, 200, { order, replayed: true }); return;
++      }
++
++      const reservation = {
++        productId: input.productId,
++        quantity: input.quantity,
++        promise: createOrder(input),
++      };
++      checkoutRequests.set(key, reservation);
++      try {
++        const order = await reservation.promise;
++        json(res, 201, { order, replayed: false }); return;
++      } catch (error) {
++        if (checkoutRequests.get(key) === reservation) checkoutRequests.delete(key);
++        if (checkoutRequests.size === 0) requestsByCheckout.delete(input.checkoutId);
++        throw error;
++      }
+     }
+     if (req.method === 'GET' && staticFiles.has(url.pathname)) {
+       const [file, type] = staticFiles.get(url.pathname);
+diff --git a/tests/app.test.mjs b/tests/app.test.mjs
+index 44b7902..a9b5c47 100644
+--- a/tests/app.test.mjs
++++ b/tests/app.test.mjs
+@@ -4,8 +4,8 @@ import { createServer } from 'node:http';
+ import { once } from 'node:events';
+ import { createApp } from '../src/app.mjs';
+ 
+-async function withServer(fn) {
+-  const app = createApp({ processingDelayMs: 5 });
++async function withServer(fn, options = {}) {
++  const app = createApp({ processingDelayMs: 5, ...options });
+   const server = createServer((req, res) => {
+     app(req, res).catch((error) => { res.writeHead(500); res.end(error.message); });
+   });
+@@ -18,10 +18,14 @@ async function withServer(fn) {
+   }
+ }
+ const input = { checkoutId: 'checkout-test-001', productId: 'DEMO-HEADSET', quantity: 1 };
+-const post = (base, key, body = input) => fetch(`${base}/api/orders`, {
+-  method: 'POST', headers: { 'content-type': 'application/json', 'Idempotency-Key': key },
+-  body: JSON.stringify(body),
+-});
++const post = (base, key, body = input) => {
++  const headers = { 'content-type': 'application/json' };
++  if (key !== undefined) headers['Idempotency-Key'] = key;
++  return fetch(`${base}/api/orders`, {
++    method: 'POST', headers,
++    body: JSON.stringify(body),
++  });
++};
+ 
+ test('a valid single order is created with the expected amount', () => withServer(async (base) => {
+   const response = await post(base, 'order-key-0001');
+@@ -43,6 +47,98 @@ test('invalid quantities are rejected', () => withServer(async (base) => {
+   assert.equal((await post(base, 'order-key-0001', { ...input, quantity: 0 })).status, 400);
+ }));
+ 
++test('missing and malformed idempotency keys are rejected', () => withServer(async (base) => {
++  for (const key of [undefined, 'short', 'invalid key', 'x'.repeat(81)]) {
++    const response = await post(base, key);
++    assert.equal(response.status, 400);
++    assert.equal((await response.json()).error.code, 'INVALID_IDEMPOTENCY_KEY');
++  }
++  const result = await (await fetch(`${base}/api/orders?checkoutId=${input.checkoutId}`)).json();
++  assert.equal(result.total, 0);
++}));
++
++test('a sequential retry reuses the completed order', () => withServer(async (base) => {
++  const first = await post(base, 'retry-key-0001');
++  const firstBody = await first.json();
++  const second = await post(base, 'retry-key-0001');
++  const secondBody = await second.json();
++
++  assert.equal(first.status, 201);
++  assert.equal(firstBody.replayed, false);
++  assert.equal(second.status, 200);
++  assert.equal(secondBody.replayed, true);
++  assert.equal(secondBody.order.id, firstBody.order.id);
++
++  const result = await (await fetch(`${base}/api/orders?checkoutId=${input.checkoutId}`)).json();
++  assert.equal(result.total, 1);
++}));
++
++test('concurrent retries wait for and reuse one order', () => withServer(async (base) => {
++  const responses = await Promise.all([
++    post(base, 'concurrent-key-0001'),
++    post(base, 'concurrent-key-0001'),
++  ]);
++  const bodies = await Promise.all(responses.map((response) => response.json()));
++
++  assert.deepEqual(responses.map((response) => response.status).sort(), [200, 201]);
++  assert.deepEqual(bodies.map((body) => body.replayed).sort(), [false, true]);
++  assert.equal(bodies[0].order.id, bodies[1].order.id);
++
++  const result = await (await fetch(`${base}/api/orders?checkoutId=${input.checkoutId}`)).json();
++  assert.equal(result.total, 1);
++}));
++
++test('reusing a completed key for different order content is rejected', () => withServer(async (base) => {
++  const accepted = await post(base, 'conflict-key-0001');
++  const acceptedBody = await accepted.json();
++  const conflict = await post(base, 'conflict-key-0001', { ...input, quantity: 2 });
++
++  assert.equal(conflict.status, 409);
++  assert.equal((await conflict.json()).error.code, 'IDEMPOTENCY_CONFLICT');
++  const result = await (await fetch(`${base}/api/orders?checkoutId=${input.checkoutId}`)).json();
++  assert.equal(result.total, 1);
++  assert.equal(result.items[0].id, acceptedBody.order.id);
++  assert.equal(result.items[0].quantity, 1);
++}));
++
++test('reusing an in-progress key for different order content is rejected', () => withServer(async (base) => {
++  const pending = post(base, 'pending-key-0001');
++  await new Promise((resolve) => setTimeout(resolve, 20));
++  const conflict = await post(base, 'pending-key-0001', { ...input, productId: 'DEMO-SPEAKER' });
++  const accepted = await pending;
++
++  assert.equal(conflict.status, 409);
++  assert.equal((await conflict.json()).error.code, 'IDEMPOTENCY_CONFLICT');
++  assert.equal(accepted.status, 201);
++  const result = await (await fetch(`${base}/api/orders?checkoutId=${input.checkoutId}`)).json();
++  assert.equal(result.total, 1);
++  assert.equal(result.items[0].productId, input.productId);
++}, { processingDelayMs: 100 }));
++
++test('an invalid order does not consume its idempotency key', () => withServer(async (base) => {
++  const invalid = await post(base, 'reusable-key-0001', { ...input, quantity: 0 });
++  assert.equal(invalid.status, 400);
++  assert.equal((await invalid.json()).error.code, 'INVALID_ORDER');
++
++  const corrected = await post(base, 'reusable-key-0001');
++  assert.equal(corrected.status, 201);
++  assert.equal((await corrected.json()).replayed, false);
++}));
++
++test('the same key is independent across checkouts', () => withServer(async (base) => {
++  const otherInput = { ...input, checkoutId: 'checkout-test-002' };
++  const first = await post(base, 'scoped-key-0001');
++  const second = await post(base, 'scoped-key-0001', otherInput);
++
++  assert.equal(first.status, 201);
++  assert.equal(second.status, 201);
++  const firstResult = await (await fetch(`${base}/api/orders?checkoutId=${input.checkoutId}`)).json();
++  const secondResult = await (await fetch(`${base}/api/orders?checkoutId=${otherInput.checkoutId}`)).json();
++  assert.equal(firstResult.total, 1);
++  assert.equal(secondResult.total, 1);
++  assert.notEqual(firstResult.items[0].id, secondResult.items[0].id);
++}));
++
+ test('health check remains available', () => withServer(async (base) => {
+   const response = await fetch(`${base}/healthz`);
+   assert.equal(response.status, 200);
