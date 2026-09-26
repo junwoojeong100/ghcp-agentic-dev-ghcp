@@ -1,9 +1,11 @@
 {
-  "recordedAt": "2026-09-25T23:28:48.390313+00:00",
+  "recordedAt": "2026-09-26T02:42:22.698388+00:00",
   "passed": true,
   "freshExtraction": true,
   "runtimeDependenciesInstalled": false,
-  "referenceTests": "repository: 17/17 passing\nacceptance: 16/16 passing\n{\n  files: 59,\n  sourceDigest: '75fdf7cdc1f97375f8323728aa08172c3350b2b69376a7017c1e10288a158a93'\n}",
+  "artifactHashesVerified": 255,
+  "kitSourceDigest": "3a35b30aa84720f645f3637e01316f2921393d9d44708623799dcf5001482e9e",
+  "referenceTests": "repository: 17/17 passing\nacceptance: 16/16 passing\n{\n  files: 81,\n  sourceDigest: '3a35b30aa84720f645f3637e01316f2921393d9d44708623799dcf5001482e9e'\n}",
   "httpChecks": [
     "simultaneous duplicate yields one order",
     "new key yields a second order",

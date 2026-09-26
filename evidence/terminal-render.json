@@ -1,0 +1,214 @@
+{
+  "runId": "cli-take-02",
+  "captures": {
+    "cli-take-02": "74cc864e70bb240c783a2eb47fd2b6d36e1bf1f9a2c25f77c72a87a112135a35",
+    "cli-take-02-rework": "706d6779190e43cf957718389d415eedd20bc2260ec4e25f3d9ca8e137c5501d",
+    "cli-take-02-rework-02": "c46b0c0d83c91d7c075d8cbb7ccc168c3078426ea44a121ab5c2046412ecec92",
+    "cli-take-02-review": "be8492a582a9f5dd1fe150e1b9e644f1f1058d7f39d49f451803c463b5b6f6fb"
+  },
+  "renderer": "@xterm/xterm 5.5.0",
+  "fps": 12,
+  "clips": [
+    {
+      "scene": "03-plan",
+      "path": "video/recordings/03-plan.mp4",
+      "duration": 42,
+      "sourceIntervals": [
+        {
+          "from": 3.3,
+          "to": 16,
+          "duration": 14
+        },
+        {
+          "from": 16,
+          "to": 30.8,
+          "duration": 16
+        },
+        {
+          "from": 31,
+          "to": 37,
+          "duration": 12
+        }
+      ]
+    },
+    {
+      "scene": "04-approval",
+      "path": "video/recordings/04-approval.mp4",
+      "duration": 48,
+      "sourceIntervals": [
+        {
+          "from": 39.2,
+          "to": 46,
+          "duration": 14
+        },
+        {
+          "from": 103,
+          "to": 111.2,
+          "duration": 24
+        },
+        {
+          "from": 111.5,
+          "to": 117,
+          "duration": 10
+        }
+      ]
+    },
+    {
+      "scene": "05-implementation",
+      "path": "video/recordings/05-implementation.mp4",
+      "duration": 50,
+      "sourceIntervals": [
+        {
+          "from": 112,
+          "to": 114,
+          "duration": 6
+        },
+        {
+          "from": 360,
+          "to": 370,
+          "duration": 12
+        },
+        {
+          "from": 375,
+          "to": 387,
+          "duration": 12
+        },
+        {
+          "from": 388,
+          "to": 399,
+          "duration": 20
+        }
+      ]
+    },
+    {
+      "scene": "06-tests",
+      "path": "video/recordings/06-tests.mp4",
+      "duration": 32,
+      "sourceIntervals": [
+        {
+          "from": 402.501233,
+          "to": 402.501233,
+          "duration": 5
+        },
+        {
+          "capture": "cli-take-02-rework",
+          "from": 0.05,
+          "to": 1.2,
+          "duration": 3
+        },
+        {
+          "capture": "cli-take-02-rework",
+          "from": 77,
+          "to": 99,
+          "duration": 8
+        },
+        {
+          "capture": "cli-take-02-rework",
+          "from": 194.410868,
+          "to": 194.410868,
+          "duration": 3
+        },
+        {
+          "capture": "cli-take-02-rework-02",
+          "from": 48,
+          "to": 55,
+          "duration": 5
+        },
+        {
+          "capture": "cli-take-02-rework-02",
+          "from": 85.615636,
+          "to": 85.615636,
+          "duration": 8
+        }
+      ]
+    },
+    {
+      "scene": "08-review",
+      "path": "video/recordings/08-review.mp4",
+      "duration": 40,
+      "sourceIntervals": [
+        {
+          "capture": "cli-take-02-review",
+          "from": 3,
+          "to": 17,
+          "duration": 12
+        },
+        {
+          "capture": "cli-take-02-review",
+          "from": 18,
+          "to": 36,
+          "duration": 12
+        },
+        {
+          "capture": "cli-take-02-review",
+          "from": 40,
+          "to": 52.9,
+          "duration": 12
+        },
+        {
+          "capture": "cli-take-02-review",
+          "from": 54.441523,
+          "to": 54.441523,
+          "duration": 4
+        }
+      ]
+    }
+  ],
+  "snapshots": [
+    {
+      "capture": "cli-take-02",
+      "at": 6,
+      "path": "presentation/assets/cli-00-start.png",
+      "visibleText": "╭────────────────────────────────────────────────────────────────────────────────────────────────────────────╮\n│                                                                                                            │\n│  ╭─╮╭─╮                            │  Getting started                                                      │\n│  ╰─╯╰─╯  Copilot v1.0.88 uses AI.  │  /init — Initialize Copilot instructions for this repository          │\n│  █ ▘▝ █  Check for mistakes.       │  /model — Switch models across providers, or use Auto                 │\n│   ▔▔▔▔                             │                                                                       │\n│                                                                                                            │\n╰────────────────────────────────────────────────────────────────────────────────────────────────────────────╯\n\n ● Selected custom agent: demo-planner\n\n ❯ REQUEST.md의 ORDER-001을 계획하세요. 관련 소스와 테스트를 실제로 읽고, 승인 전에는 구현하지 마세요.   11:03\n   고객 문제와 완료 기준을 먼저 설명하세요. 실패·부분 성공·첫 동작이 새 주문인 경우에도 UI가 모순되지\n   않아야 합니다. 파일을 쓰지 말고 최종 답변으로 계획만 반환하세요.\n\n\n\n\n\n ~/GitHub/ghcp-agentic-dev-ghcp/demo/runs/cli-take-02 [⎇ main]                              Session: 0 AIC used\n────────────────────────────────────────────────────────────────────────────────────────────────────────────────\n❯ \n────────────────────────────────────────────────────────────────────────────────────────────────────────────────\n ○ Working esc interrupt                                                                    demo-planner · Auto"
+    },
+    {
+      "capture": "cli-take-02",
+      "at": 35,
+      "path": "presentation/assets/cli-01-plan.png",
+      "visibleText": "     동시·순차 요청은 한 주문으로 처리합니다. 첫 응답은 201, 재사용 응답은 200으로 같은 주문번호를 반환합니다. ┃\n     같은 범위·키에 다른 상품 또는 수량이면 진행 중에도 409로 거절하고 기존 결과는 보존합니다. 주문 검증에     ┃\n     실패한 요청은 키를 소비하지 않습니다. 상태·목록·404 동작은 유지합니다.                                    ┃\n   •  tests/app.test.mjs : 키 누락·형식 오류, 동시/순차 재전송, 진행 중 충돌, 다른 키 및 다른 체크아웃, 잘못된 ┃\n     주문 후 같은 키 재사용, 기존 상태·목록·404 동작을 검증합니다.                                             ┃\n   •  public/app.mjs : 일반 전송 중 중복 클릭을 막되 동시 전송 실험은 실제 요청 2개를 보냅니다. 각 응답의      ┃\n     성공·실패를 따로 기록하고 부분 성공에도 목록을 갱신하며, 요청 실패와 목록 조회 실패를 구분해 표시합니다.  ┃\n     초기 요청은 새 주문, 재전송은 같은 키, 별도 새 주문은 새 키라는 흐름을 분명히 해 첫 동작이 새 주문이어도  ┃\n     설명·건수가 어긋나지 않게 합니다.                                                                         ┃\n   •  public/index.html : 새 주문과 기존 결과 재사용, 로딩·실패·부분 성공을 구분해 안내하고 두 실험 시나리오를 ┃\n     확인할 수 있게 합니다. 브라우저에서 동시 재전송과 별도 새 주문을 확인합니다.                              ┃\n                                                                                                               ┃\n   범위 밖: 실제 결제·고객 데이터·배포·의존성 변경은 하지 않습니다. 메모리 저장은 단일 Node 프로세스 범위이며  ┃\n   재시작·다중 인스턴스의 안전성을 보장하지 않습니다. 운영 전에는 영속 저장소의 원자성·고유 제약과 키 수명,    ┃\n   장애·재시도 정책 등을 별도로 검토해야 합니다.                                                               ┃\n                                                                                                               ┃\n   승인 checkpoint: 위 네 파일만 변경하는 범위를 사람에게 제안합니다. 아직 구현 승인은 아닙니다. 승인 후       ┃\n    demo-implementer 에 이 기준으로 인계하고, 실제 테스트 및 브라우저 확인 후 출시 여부는 별도로 판단합니다.   ┃\n                                                                                                               ┃\n ~/GitHub/ghcp-agentic-dev-ghcp/demo/runs/cli-take-02 [⎇ main]                            Session: 0.3 AIC used\n────────────────────────────────────────────────────────────────────────────────────────────────────────────────\n❯ \n────────────────────────────────────────────────────────────────────────────────────────────────────────────────\n ← open sidebar · / commands · ? help                                          demo-planner · Auto → gpt-6-luna"
+    },
+    {
+      "capture": "cli-take-02",
+      "at": 44,
+      "path": "presentation/assets/cli-02-scope.png",
+      "visibleText": "소비하지 않습니다. 상태·목록·404 동작은 유지합니다.\n- `tests/app.test.mjs`: 키 누락·형식 오류, 동시/순차 재전송, 진행 중 충돌, 다른 키 및 다른 체크아웃, 잘못된 주문\n 후 같은 키 재사용, 기존 상태·목록·404 동작을 검증합니다.\n- `public/app.mjs`: 일반 전송 중 중복 클릭을 막되 동시 전송 실험은 실제 요청 2개를 보냅니다. 각 응답의 성공·실패\n를 따로 기록하고 부분 성공에도 목록을 갱신하며, 요청 실패와 목록 조회 실패를 구분해 표시합니다. 초기 요청은 새 \n주문, 재전송은 같은 키, 별도 새 주문은 새 키라는 흐름을 분명히 해 첫 동작이 새 주문이어도 설명·건수가 어긋나지 \n않게 합니다.\n- `public/index.html`: 새 주문과 기존 결과 재사용, 로딩·실패·부분 성공을 구분해 안내하고 두 실험 시나리오를 확인\n할 수 있게 합니다. 브라우저에서 동시 재전송과 별도 새 주문을 확인합니다.\n\n**범위 밖:** 실제 결제·고객 데이터·배포·의존성 변경은 하지 않습니다. 메모리 저장은 단일 Node 프로세스 범위이며 \n재시작·다중 인스턴스의 안전성을 보장하지 않습니다. 운영 전에는 영속 저장소의 원자성·고유 제약과 키 수명, 장애·재\n시도 정책 등을 별도로 검토해야 합니다.\n\n**승인 checkpoint:** 위 네 파일만 변경하는 범위를 사람에게 제안합니다. 아직 구현 승인은 아닙니다. 승인 후 `demo-\nimplementer`에 이 기준으로 인계하고, 실제 테스트 및 브라우저 확인 후 출시 여부는 별도로 판단합니다.\n\n\n[BLOCKED BEFORE APPROVAL] STOP: scope approval is missing. A person must review the plan first.\nAllowed files: src/app.mjs, public/index.html, public/app.mjs, tests/app.test.mjs\nNo payments, dependency changes, push, merge, or deployment.\n\n[HUMAN GATE] Type APPROVE ORDER-001 to approve the four-file plan; anything else stops:\n> "
+    },
+    {
+      "capture": "cli-take-02",
+      "at": 108,
+      "path": "presentation/assets/cli-03-permission.png",
+      "visibleText": "│ 76 +             json(res, 409, { error: { code: 'IDEMPOTENCY_CONFLICT' } }); return;                        │\n│ 77 +           }                                                                                             │\n│ 78 +           const order = await existing.promise;                                                         │\n│ 79 +           json(res, 200, { order, replayed: true }); return;                                            │\n│ 80 +         }                                                                                               │\n│ 81 +         const entry = { productId: input.productId, quantity: input.quantity, promise: null };          │\n│ 82 +         idempotency.set(scope, entry);                                                                  │\n│ 83 +         entry.promise = createOrder(input).catch((error) => {                                           │\n│ 84 +           if (idempotency.get(scope) === entry) idempotency.delete(scope);                              │\n│ 85 +           throw error;                                                                                  │\n│ 86 +         });                                                                                             │\n│ 87 +         const order = await entry.promise;                                                              │\n│ 88           json(res, 201, { order, replayed: false }); return;                                             │\n│ 89         }                                                                                                 │\n│ 90         if (req.method === 'GET' && staticFiles.has(url.pathname)) {                                      │\n│                                                                                                              │\n│ Do you want to update /Users/junwoojeong/GitHub/ghcp-agentic-dev-ghcp/demo/runs/cli-take-02/src/app.mjs?     │\n│                                                                                                              │\n│ ❯ 1. Yes                                                                                                     │\n│   2. Yes, and don't ask again for file operations when in this repo (~/GitHub/.../cli-take-02)               │\n│   3. No, and tell Copilot what to do differently (Esc to stop)                                               │\n│                                                                                                              │\n│ ↑/↓ to navigate · enter to select · esc to cancel                                                            │\n╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────╯"
+    },
+    {
+      "capture": "cli-take-02",
+      "at": 398,
+      "path": "presentation/assets/cli-04-implementation.png",
+      "visibleText": " JS Read app.mjs 112 lines read                                                                                ┃\n HT Read index.html 41 lines read                                                                              ┃\n JS Read app.test.mjs 155 lines read                                                                           ┃\n                                                                                                               ┃\n ● Edit  Edit tests/app.test.mjs                                                                            7s ┃\n                                                                                                               ┃\n ● 리허설 승인 기록의 범위에 따라 구현했습니다. 이는 자동 리허설 승인이지 사람의 승인 기록은 아닙니다.         ┃\n                                                                                                               ┃\n   •  src/app.mjs : 주문 키 필수·형식 검증, 체크아웃별 생성 작업 예약과 결과 재사용, 다른 내용의 키 재사용     ┃\n     충돌 처리를 추가했습니다. 잘못된 주문은 키를 소비하지 않습니다.                                           ┃\n   •  public/app.mjs ,  public/index.html : 새 주문과 재사용 응답을 구분하고, 동시 요청 실험·버튼 로딩         ┃\n     상태·개별 실패 및 부분 성공 표시를 반영했습니다.                                                          ┃\n   •  tests/app.test.mjs : 순차·동시 재전송, 내용 충돌, 키 경계값, 체크아웃 범위, 잘못된 주문 후 재시도를      ┃\n     확인하는 회귀 테스트를 추가했습니다.                                                                      ┃\n                                                                                                               ┃\n   테스트와 브라우저 확인은 요청대로 실행하지 않았습니다. 이전 기준 로그에는 저장소 테스트 6개 통과와 인수     ┃\n   테스트 9개 실패가 기록되어 있지만, 이는 이번 변경의 검증 결과가 아닙니다. 요청하신 이전 리뷰·브라우저       ┃\n   확인·테스트 산출물 파일은 없었습니다. 이후 검증은 컨트롤러가 수행해야 합니다.                               ┃\n                                                                                                               ┃\n ~/GitHub/ghcp-agentic-dev-ghcp/demo/runs/cli-take-02 [⎇ main*]                          Session: 1.11 AIC used \n────────────────────────────────────────────────────────────────────────────────────────────────────────────────\n❯ \n────────────────────────────────────────────────────────────────────────────────────────────────────────────────\n ← open sidebar · / commands · ? help                                      demo-implementer · Auto → gpt-6-luna "
+    },
+    {
+      "capture": "cli-take-02-rework-02",
+      "at": 85.615636,
+      "path": "presentation/assets/cli-05-tests.png",
+      "visibleText": "  ]\n}\nRunning demo-implementer; a real Copilot request is being made. Logs: .demo/logs/\n$ copilot --agent demo-implementer --interactive \"<scoped request>\"\nNative Copilot UI follows. After its final response, type /exit to hand the result to the next stage.\n\n  \n  ╭─╮╭─╮   Changes    +4 -3\n  ╰─╯╰─╯   AI Credits 0.84 (1m 21s)\n  █ ▘▝ █   Tokens     ↑ 106.8k (76.6k cached, 30.2k written) • ↓ 7.7k (6.0k reasoning)\n   ▔▔▔▔    Resume     copilot --resume=0ecfeaaa-f363-4c4e-a7be-0da96541aa0d\n\n\n[VERIFY AFTER REWORK] Actual Node.js results, not an AI assertion.\n┌─────────┬──────────────┬──────────┬───────┬──────┬──────┬─────────┬───────────┐\n│ (index) │ name         │ exitCode │ tests │ pass │ fail │ skipped │ cancelled │\n├─────────┼──────────────┼──────────┼───────┼──────┼──────┼─────────┼───────────┤\n│ 0       │ 'repository' │ 0        │ 17    │ 17   │ 0    │ 0       │ 0         │\n│ 1       │ 'acceptance' │ 0        │ 16    │ 16   │ 0    │ 0       │ 0         │\n└─────────┴──────────────┴──────────┴───────┴──────┴──────┴─────────┴───────────┘\nVerified source SHA-256: 3a35b30aa84720f645f3637e01316f2921393d9d44708623799dcf5001482e9e\n[BROWSER CHECK REQUIRED] Re-run browser checks on this source, then review. No release approval.\nrework: complete\n"
+    },
+    {
+      "capture": "cli-take-02-review",
+      "at": 51,
+      "path": "presentation/assets/cli-06-review.png",
+      "visibleText": " ● RECOMMENDATION: READY_FOR_HUMAN_REVIEW                                                                      ┃\n                                                                                                               ┃\n   관찰 — 고객 영향: 검토한 변경은 동일한 체크아웃·키·주문 내용의 재전송을 기존 주문에 연결하고, 충돌 내용은   ┃\n   거절하며, 다른 키의 새 주문은 허용합니다. 변경 범위는 요청된 네 파일과 일치합니다. 코드에서 조치가 필요한   ┃\n   결함은 발견하지 못했습니다.                                                                                 ┃\n                                                                                                               ┃\n   완료 기준과 근거:  .demo/03-tests.tap 에는 저장소 테스트 17/17, acceptance 테스트 16/16 통과가 기록되어     ┃\n   있고,  .demo/03-verification.json 도 두 테스트 묶음의 종료 코드 0을 기록합니다. 이는 AC1–5와 UI의 요청      ┃\n   실패·부분 실패 처리 등을 뒷받침하지만, 제가 테스트를 실행한 것은 아닙니다.  .demo/06-browser-check.json 은  ┃\n   동시 재전송, 별도 새 주문, 버튼 중복 클릭 방지, 오류 복구 등 11개 브라우저 확인을 모두 통과했다고           ┃\n   기록합니다. 이 파일의  sourceDigest 는 현재 검증 파일의 값과 일치합니다. 다만 기록에 열거된 스크린샷 경로는 ┃\n   존재하지 않아 이미지 자체는 확인하지 못했습니다.                                                            ┃\n                                                                                                               ┃\n   남은 사항과 판단:  .demo/04-review.md 는 브라우저 기록이 없고 저장소 테스트가 14개라고 적어 현재 TAP 및     ┃\n   브라우저 기록과 불일치합니다. 기록의 실제 실행을 제가 독립적으로 재현하지는 않았습니다. 저장소는 단일       ┃\n   프로세스 메모리 기반이며 재시작·다중 인스턴스 안전성은 검증 대상이 아닙니다. 제안: 기록상 사람 검토 단계로  ┃\n   넘길 수 있습니다. 승인: 이 권고는 출시 승인이나 병합 승인이 아니며, 최종 출시 판단은 사람에게 남아          ┃\n   있습니다.                                                                                                   ┃\n                                                                                                               ┃\n ~/GitHub/ghcp-agentic-dev-ghcp/demo/runs/cli-take-02 [⎇ main*]                          Session: 0.63 AIC used\n────────────────────────────────────────────────────────────────────────────────────────────────────────────────\n❯ \n────────────────────────────────────────────────────────────────────────────────────────────────────────────────\n ← open sidebar · / commands · ? help                                         demo-reviewer · Auto → gpt-6-luna"
+    },
+    {
+      "capture": "cli-take-02-rework",
+      "at": 194.410868,
+      "path": "presentation/assets/cli-07-failed-test.png",
+      "visibleText": "행하지 않았습니다.\"\n\n{\n  \"feedback\": \"1개 요청 중 1개가 실패했습니다. 각 응답과 현재 주문 목록을 확인하세요. 실제 결제는 실행하지 않았\n습니다.\",\n  \"resultState\": \"ok\",\n  \"resultTitle\": \"의도한 주문 수와 다릅니다\",\n  \"resultDetail\": \"의도한 주문 1건 / 실제 생성 0건\",\n  \"traces\": [\n    \"응답 1 · 실패 · HTTP 503 · SIMULATED_OUTAGE\"\n  ]\n}\nRunning demo-implementer; a real Copilot request is being made. Logs: .demo/logs/\n$ copilot --agent demo-implementer --interactive \"<scoped request>\"\nNative Copilot UI follows. After its final response, type /exit to hand the result to the next stage.\n\n  \n  ╭─╮╭─╮   Changes    +208 -29\n  ╰─╯╰─╯   AI Credits 1.72 (3m 10s)\n  █ ▘▝ █   Tokens     ↑ 319.1k (269.4k cached, 49.6k written) • ↓ 16.5k (10.1k reasoning)\n   ▔▔▔▔    Resume     copilot --resume=8b138045-f6db-48af-9a28-b4643c0559ec\n\nERROR: Verification failed. See .demo/03-tests.tap. Fix the code, not the acceptance criteria.\n"
+    },
+    {
+      "capture": "cli-take-02-review",
+      "at": 54.441523,
+      "path": "presentation/assets/cli-08-final-gate.png",
+      "visibleText": "Running demo-reviewer; a real Copilot request is being made. Logs: .demo/logs/\n$ copilot --agent demo-reviewer --interactive \"<scoped request>\"\nNative Copilot UI follows. After its final response, type /exit to hand the result to the next stage.\n\n  \n  ╭─╮╭─╮   Changes    +0 -0\n  ╰─╯╰─╯   AI Credits 0.63 (50s)\n  █ ▘▝ █   Tokens     ↑ 85.3k (58.8k cached, 26.5k written) • ↓ 4.7k (3.4k reasoning)\n   ▔▔▔▔    Resume     copilot --resume=a57ef2e0-a2a0-4228-aa6a-c9196a357e54\n\nreview: complete\n[FINAL HUMAN GATE] Recommendation only. No release approval, PR, merge, or deployment.\n\n\n\n\n\n\n\n\n\n\n\n"
+    }
+  ],
+  "note": "Only original PTY output is rendered. Cuts and playback speed are declared in edit.json."
+}

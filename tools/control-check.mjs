@@ -4,7 +4,8 @@ import { resolve } from 'node:path';
 import { tapCounts } from '../demo/scripts/workflow.mjs';
 
 const root = resolve(import.meta.dirname, '..');
-const result = spawnSync(process.execPath, ['--test', '--test-reporter=tap', 'demo/tests/workflow.test.mjs'], {
+const result = spawnSync(process.execPath, ['--test', '--test-reporter=tap',
+  'demo/tests/workflow.test.mjs', 'demo/tests/interactive.test.mjs'], {
   cwd: root, encoding: 'utf8', timeout: 60000,
 });
 if (result.error) throw result.error;

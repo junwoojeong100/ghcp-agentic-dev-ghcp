@@ -1,4 +1,4 @@
-import { createHash } from 'node:crypto';
+import { createHash, randomUUID } from 'node:crypto';
 import { spawn } from 'node:child_process';
 import { createServer } from 'node:http';
 import { cp, mkdir, readFile, readdir, lstat, writeFile, access } from 'node:fs/promises';
@@ -6,9 +6,11 @@ import { constants } from 'node:fs';
 import { dirname, join, resolve, relative, isAbsolute, sep } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { parseArgs } from 'node:util';
+import { runInteractive, askScopeApproval } from './cli-session.mjs';
 
 export const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 export const ALLOWED = ['src/app.mjs', 'public/index.html', 'public/app.mjs', 'tests/app.test.mjs'];
+const SAVED_WORKSPACES = new Set(['reference', 'cli-reference']);
 const ARTIFACTS = ['01-plan.md', 'plan-approval.json', '02-implementation.md', '02-diff.patch',
   '03-tests.tap', '03-verification.json', '04-review.md', '05-decision.json', '00-baseline.tap',
   '06-browser-check.json'];
@@ -26,7 +28,7 @@ async function exists(path) {
 
 export function workspace(id, root = ROOT) {
   if (!/^[a-z0-9][a-z0-9-]{0,39}$/.test(id ?? '')) throw new Error('Run ID must use 1-40 lowercase letters, digits, or hyphens.');
-  return id === 'reference' ? join(root, 'reference') : join(root, 'runs', id);
+  return SAVED_WORKSPACES.has(id) ? join(root, id) : join(root, 'runs', id);
 }
 
 export async function files(dir, prefix = '') {
@@ -100,7 +102,7 @@ async function updateState(dir, values) {
 }
 
 export async function prepare(id, root = ROOT) {
-  if (id === 'reference') throw new Error('The reference is immutable; choose a fresh run ID.');
+  if (SAVED_WORKSPACES.has(id)) throw new Error('The reference is immutable; choose a fresh run ID.');
   const dir = workspace(id, root);
   if (await exists(dir)) throw new Error(`Run already exists: ${id}. Use a new ID; nothing was overwritten.`);
   await mkdir(dirname(dir), { recursive: true });
@@ -140,30 +142,49 @@ export function extractFinal(output) {
   return `${messages.at(-1).trim()}\n`;
 }
 
-async function invokeAgent(dir, role, prompt) {
-  const startedAt = now();
+export function agentArguments(dir, role, prompt, { interactive = false, sessionId } = {}) {
+  if (!['planner', 'implementer', 'reviewer'].includes(role)) throw new Error(`Unknown agent role: ${role}`);
+  if (interactive && !sessionId) throw new Error('Interactive invocation requires an explicit session ID.');
   const args = [
-    '--agent', `demo-${role}`, '--prompt', prompt, '--output-format', 'json',
-    '--stream', 'off', '--no-color', '--no-ask-user', '--no-remote-export',
+    '--agent', `demo-${role}`, interactive ? '--interactive' : '--prompt', prompt,
+    '--no-remote-export',
     '--disallow-temp-dir', '--disable-builtin-mcps', '--deny-tool=shell', '--deny-tool=url',
   ];
+  if (interactive) {
+    args.push('--session-id', sessionId, '--mode', 'interactive', '--banner');
+  } else {
+    args.push('--output-format', 'json', '--stream', 'off', '--no-color', '--no-ask-user');
+  }
   for (const server of ['azure', 'playwright', 'playwright-headless', 'computer-use', 'microsoft-learn', 'enghub']) {
     args.push('--disable-mcp-server', server);
   }
-  if (role === 'implementer') {
+  if (role === 'implementer' && !interactive) {
     for (const file of ALLOWED) args.push(`--allow-tool=write(${join(dir, file)})`);
-  } else {
+  } else if (role !== 'implementer') {
     args.push('--deny-tool=write');
   }
+  return args;
+}
+
+async function invokeAgent(dir, role, prompt, { interactive = false } = {}) {
+  const startedAt = now();
+  const sessionId = interactive ? randomUUID() : undefined;
+  const args = agentArguments(dir, role, prompt, { interactive, sessionId });
   const version = await run('copilot', ['--version'], { cwd: dir });
   if (version.code !== 0) throw new Error('Copilot CLI is unavailable; use the documented reference fallback.');
   const redact = (value) => value.replaceAll(dir, '<workspace>').replaceAll(ROOT, '<demo-kit>');
   await save(metadata(dir, `logs/${role}.invocation.json`), {
     startedAt, agent: `demo-${role}`, command: 'copilot', args: args.map(redact),
-    version: version.stdout.trim(), note: 'Workspace paths are replaced; no output is synthesized.',
+    version: version.stdout.trim(), interactive, sessionId,
+    note: 'Workspace paths are replaced in JSON evidence only; no output is synthesized.',
   });
   console.log(`Running demo-${role}; a real Copilot request is being made. Logs: .demo/logs/`);
-  const result = await run('copilot', args, { cwd: dir, timeout: 240000 });
+  if (interactive) {
+    console.log(`$ copilot --agent demo-${role} --interactive "<scoped request>"`);
+    console.log('Native Copilot UI follows. After its final response, type /exit to hand the result to the next stage.');
+  }
+  const result = interactive ? await runInteractive(dir, args, sessionId) :
+    await run('copilot', args, { cwd: dir, timeout: 240000 });
   await writeFile(metadata(dir, `logs/${role}.events.jsonl`), redact(result.stdout));
   await writeFile(metadata(dir, `logs/${role}.stderr.txt`), redact(result.stderr));
   await save(metadata(dir, `logs/${role}.result.json`), {
@@ -175,12 +196,12 @@ async function invokeAgent(dir, role, prompt) {
   return { text: extractFinal(result.stdout), startedAt, completedAt: now(), cliVersion: version.stdout.trim() };
 }
 
-export async function plan(dir) {
+export async function plan(dir, options = {}) {
   const state = await stateOf(dir);
   if ((await digest(dir)) !== state.baselineDigest) throw new Error('Plan from a clean baseline; prepare a fresh run.');
   await updateState(dir, { plan: null, planApproval: null, implementation: null, verification: null, review: null, decision: null });
   const result = await invokeAgent(dir, 'planner',
-    'REQUEST.md의 ORDER-001을 계획하세요. 관련 소스와 테스트를 실제로 읽고, 승인 전에는 구현하지 마세요. 고객 문제와 완료 기준을 먼저 설명하세요. 파일을 쓰지 말고 최종 답변으로 계획만 반환하세요.');
+    'REQUEST.md의 ORDER-001을 계획하세요. 관련 소스와 테스트를 실제로 읽고, 승인 전에는 구현하지 마세요. 고객 문제와 완료 기준을 먼저 설명하세요. 실패·부분 성공·첫 동작이 새 주문인 경우에도 UI가 모순되지 않아야 합니다. 파일을 쓰지 말고 최종 답변으로 계획만 반환하세요.', options);
   if ((await digest(dir)) !== state.baselineDigest) throw new Error('Read-only planner changed the source. Stop and investigate.');
   await writeFile(metadata(dir, '01-plan.md'), result.text);
   await updateState(dir, { plan: { hash: sha(result.text), completedAt: result.completedAt, cliVersion: result.cliVersion }, lastError: null });
@@ -215,7 +236,7 @@ export async function requireApprovedPlan(dir) {
   return state;
 }
 
-export async function implement(dir) {
+export async function implement(dir, options = {}) {
   await requireApprovedPlan(dir);
   const previous = await stateOf(dir);
   if (previous.implementation) {
@@ -231,7 +252,7 @@ export async function implement(dir) {
   }
   await updateState(dir, { implementation: null, verification: null, review: null, decision: null });
   const result = await invokeAgent(dir, 'implementer',
-    'REQUEST.md, .demo/01-plan.md, .demo/plan-approval.json을 읽고 승인된 변경을 구현하세요. 정확히 허용된 4개 파일만 수정하세요. 테스트 실행은 컨트롤러가 수행하므로 실행하지 마세요. 이전 .demo/04-review.md, .demo/06-browser-check.json, .demo/03-tests.tap이 있으면 실제 지적과 실패를 읽고 수정하세요. 성공·실패·일부 성공 상태가 모순되지 않아야 합니다.');
+    'REQUEST.md, .demo/01-plan.md, .demo/plan-approval.json을 읽고 승인된 변경을 구현하세요. 정확히 허용된 4개 파일만 수정하세요. 테스트 실행은 컨트롤러가 수행하므로 실행하지 마세요. 이전 .demo/04-review.md, .demo/06-browser-check.json, .demo/03-tests.tap이 있으면 실제 지적과 실패를 읽고 수정하세요. 성공·실패·일부 성공 상태가 모순되지 않아야 합니다. 요청 실패·의도 수 불일치·목록 조회 실패에는 result-banner가 data-state=ok이면 안 됩니다. feedback에는 실제 오류 코드도 표시해 기존 오류 안내를 유지하세요. 이전 실패 뒤 성공적으로 재시도하면 정상 상태로 회복되어야 합니다. 실제 사용자 승인을 사칭하지 마세요. 리허설 승인 기록이면 리허설이라고 구분하세요.', options);
   await requireApprovedPlan(dir);
   const report = await requireScope(dir);
   if (!report.changed.length) throw new Error('Implementation produced no code changes.');
@@ -311,11 +332,11 @@ export async function requireVerified(dir) {
   return state;
 }
 
-export async function review(dir) {
+export async function review(dir, options = {}) {
   const state = await requireVerified(dir);
   await updateState(dir, { review: null, decision: null });
   const result = await invokeAgent(dir, 'reviewer',
-    'REQUEST.md, .demo/01-plan.md, .demo/02-diff.patch, .demo/03-tests.tap, .demo/03-verification.json과 실제 변경된 파일을 읽고 검토하세요. .demo/06-browser-check.json이 있다면 sourceDigest가 현재 검증과 일치하는지 확인하고 실제 브라우저 기록도 검토하세요. 관측된 테스트와 아직 확인되지 않은 동작을 구분하세요. 승인하거나 파일을 수정하지 마세요.');
+    'REQUEST.md, .demo/01-plan.md, .demo/02-diff.patch, .demo/03-tests.tap, .demo/03-verification.json과 실제 변경된 파일을 읽고 검토하세요. .demo/06-browser-check.json이 있다면 sourceDigest가 현재 검증과 일치하는지 확인하고 실제 브라우저 기록도 검토하세요. 관측된 테스트와 아직 확인되지 않은 동작을 구분하세요. 승인하거나 파일을 수정하지 마세요.', options);
   if (await digest(dir) !== state.verification.sourceDigest) throw new Error('Read-only reviewer changed the source. Stop and investigate.');
   const match = result.text.match(/^RECOMMENDATION: (READY_FOR_HUMAN_REVIEW|CHANGES_REQUESTED)\s*$/m);
   await writeFile(metadata(dir, '04-review.md'), result.text);
@@ -362,7 +383,8 @@ export async function decide(dir, { by, note, decision, rehearsal = false }) {
   return result;
 }
 
-export async function exportReference(dir) {
+export async function exportReference(dir, { reference = 'reference' } = {}) {
+  if (!SAVED_WORKSPACES.has(reference)) throw new Error('Reference name must be reference or cli-reference.');
   await requireVerified(dir);
   const state = await stateOf(dir);
   if (!state.review) throw new Error('Reference requires a completed real Copilot review.');
@@ -371,14 +393,16 @@ export async function exportReference(dir) {
     throw new Error('Reference requires passing browser evidence for the current source.');
   }
   if (state.decision) throw new Error('Keep the reference at the human-decision checkpoint; do not export an approved demonstration.');
-  const target = join(ROOT, 'reference');
+  const target = join(ROOT, reference);
   if (await exists(target)) throw new Error('Reference already exists; refusing to overwrite it.');
   await mkdir(target);
   for (const file of await files(dir)) {
     await mkdir(dirname(join(target, file)), { recursive: true });
     await cp(join(dir, file), join(target, file));
   }
-  await cp(metadata(dir, ''), metadata(target, ''), { recursive: true });
+  await cp(metadata(dir, ''), metadata(target, ''), {
+    recursive: true, filter: (source) => source !== metadata(dir, 'cli-home'),
+  });
   await save(metadata(target, 'origin.json'), {
     exportedAt: now(), origin: state.id, sourceDigest: await digest(dir),
     kind: 'saved-real-copilot-rehearsal', humanFinalApproval: false,
@@ -394,12 +418,13 @@ export async function exportReference(dir) {
     }
   }
   await visit(target);
-  await save(join(ROOT, 'reference-manifest.json'), { createdAt: now(), files: manifest });
+  await save(join(ROOT, `${reference}-manifest.json`), { createdAt: now(), files: manifest });
 }
 
-export async function checkReference({ executeTests = false } = {}) {
-  const manifest = await json(join(ROOT, 'reference-manifest.json'));
-  const dir = join(ROOT, 'reference');
+export async function checkReference({ executeTests = false, id = 'reference' } = {}) {
+  if (!SAVED_WORKSPACES.has(id)) throw new Error('Only a saved reference can be checked.');
+  const manifest = await json(join(ROOT, `${id}-manifest.json`));
+  const dir = join(ROOT, id);
   for (const [file, expected] of Object.entries(manifest.files)) {
     const path = resolve(dir, file);
     const relativePath = relative(dir, path);
@@ -427,7 +452,7 @@ export async function checkReference({ executeTests = false } = {}) {
 
 export async function serve(id, port = 4310) {
   const dir = workspace(id);
-  if (id === 'reference') await checkReference();
+  if (SAVED_WORKSPACES.has(id)) await checkReference({ id });
   await stateOf(dir);
   let appHash, handler;
   const server = createServer(async (req, res) => {
@@ -452,7 +477,7 @@ export async function serve(id, port = 4310) {
         if (await exists(firstReview)) artifacts['first-review.md'] = await read(firstReview);
         send('application/json; charset=utf-8', JSON.stringify({
           state, artifacts, request: await read(join(dir, 'REQUEST.md')),
-          saved: id === 'reference', currentDigest: await digest(dir),
+          saved: SAVED_WORKSPACES.has(id), currentDigest: await digest(dir),
         }));
       } else {
         const current = sha(await readFile(join(dir, 'src/app.mjs')));
@@ -473,21 +498,86 @@ export async function serve(id, port = 4310) {
     const actualPort = server.address().port;
     console.log(`Order Recovery Desk: http://127.0.0.1:${actualPort}/`);
     console.log(`Evidence desk: http://127.0.0.1:${actualPort}/presenter`);
-    console.log(id === 'reference' ? 'SAVED REHEARSAL: no new Copilot request; no final human approval.' : `LIVE WORKSPACE: ${id}; local helper UI, not GitHub product UI.`);
+    console.log(SAVED_WORKSPACES.has(id) ? 'SAVED REHEARSAL: no new Copilot request; no final human approval.' : `LIVE WORKSPACE: ${id}; local helper UI, not GitHub product UI.`);
   });
   for (const signal of ['SIGINT', 'SIGTERM']) process.on(signal, () => server.close());
   return server;
+}
+
+export async function interactiveSession(id, { rehearsal = false } = {}) {
+  if (!process.stdin.isTTY || !process.stdout.isTTY) throw new Error('The session command requires an interactive terminal.');
+  const dir = await prepare(id);
+  console.log('\nGITHUB COPILOT CLI / ORDER-001');
+  console.log(rehearsal ? 'AUTOMATED REHEARSAL: approval keystrokes are not a human or organizational approval.' :
+    'LIVE: you review the plan and approve native Copilot file-edit requests.');
+  console.log('\n[BASELINE] Reproduce the defect before changing any source.');
+  console.table(await baseline(dir));
+  await plan(dir, { interactive: true });
+  console.log('\n[PLAN HANDOFF] Actual planner response saved to .demo/01-plan.md');
+  console.log(await read(metadata(dir, '01-plan.md')));
+  try {
+    await requireApprovedPlan(dir);
+    throw new Error('Unexpected approval before the human checkpoint.');
+  } catch (error) {
+    if (!error.message.includes('scope approval is missing')) throw error;
+    console.log(`\n[BLOCKED BEFORE APPROVAL] ${error.message}`);
+  }
+  console.log(`Allowed files: ${ALLOWED.join(', ')}`);
+  console.log('No payments, dependency changes, push, merge, or deployment.');
+  await askScopeApproval();
+  await approvePlan(dir, {
+    by: rehearsal ? 'automated-video-rehearsal' : 'presenter-terminal',
+    note: rehearsal ? 'Automated rehearsal input, not human approval.' : 'Presenter typed the explicit scope-approval phrase after reviewing the plan.',
+    rehearsal,
+  });
+  console.log('\n[SCOPE APPROVED] Native file-edit permissions are still requested separately by Copilot.');
+  await implement(dir, { interactive: true });
+  console.log('\n[VERIFY] Run repository tests and the unchanged, human-owned acceptance suite.');
+  const verification = await verify(dir);
+  console.table(verification.suites);
+  console.log(`Verified source SHA-256: ${verification.sourceDigest}`);
+  await review(dir, { interactive: true });
+  const state = await stateOf(dir);
+  console.log(`\n[REVIEW] ${state.review.recommendation}`);
+  console.log('[FINAL HUMAN GATE] No release approval has been recorded. No PR, merge, or deployment.');
+  if (state.review.recommendation === 'CHANGES_REQUESTED') {
+    throw new Error('Review requested changes. Read .demo/04-review.md, then re-run implement --interactive and verify.');
+  }
+  return state;
+}
+
+export async function interactiveRework(dir) {
+  await requireApprovedPlan(dir);
+  const state = await stateOf(dir);
+  if (!state.implementation) throw new Error('Rework requires an existing implementation.');
+  console.log('\n[REWORK HANDOFF] Read actual test, browser, and review evidence; preserve the approved scope.');
+  if (await exists(metadata(dir, '06-browser-check.json'))) {
+    const browser = await json(metadata(dir, '06-browser-check.json'));
+    for (const check of browser.checks.filter(check => !check.passed)) {
+      console.log(`BROWSER CHECK FAILED: ${check.name}\n${check.error}`);
+      if (check.observedUI) console.log(JSON.stringify(check.observedUI, null, 2));
+    }
+  }
+  await implement(dir, { interactive: true });
+  const result = await verify(dir);
+  console.log('\n[VERIFY AFTER REWORK] Actual Node.js results, not an AI assertion.');
+  console.table(result.suites);
+  console.log(`Verified source SHA-256: ${result.sourceDigest}`);
+  console.log('[BROWSER CHECK REQUIRED] Re-run browser checks on this source, then review. No release approval.');
 }
 
 async function main() {
   const { positionals, values } = parseArgs({
     allowPositionals: true,
     options: { by: { type: 'string' }, note: { type: 'string' }, rehearsal: { type: 'boolean' },
+      interactive: { type: 'boolean' }, reference: { type: 'string' },
       decision: { type: 'string' }, port: { type: 'string', default: '4310' } },
   });
   const [command = 'help', id] = positionals;
   if (command === 'help') {
     console.log(`Usage: npm run demo -- COMMAND RUN-ID [options]
+  session live          Actual interactive CLI: plan -> human gate -> native edit approval -> tests -> review.
+  rework live           Interactive scoped rework using actual failure evidence, then re-run tests.
   prepare live          Create a fresh local Git workspace (never overwrite).
   baseline live         Record old tests green / new acceptance criteria red.
   plan live             Invoke the actual read-only Copilot planning agent.
@@ -498,22 +588,33 @@ async function main() {
   record-browser live   Attach evidence/browser-check.json for this source.
   decision live --decision approve|rework --by presenter --note "Reason"
   serve live            Serve the app and /presenter (127.0.0.1:4310).
-  serve reference       Offline saved rehearsal; no model calls.
-  check-reference       Check integrity and re-run reference tests.
-  export-reference ID   Export a verified real run at the final human gate.
+  serve cli-reference   Offline result of the recorded interactive CLI run.
+  serve reference       Original saved programmatic rehearsal.
+  check-reference [cli-reference]   Check integrity and re-run saved tests.
+  export-reference ID [--reference cli-reference]   Freeze a verified real run.
 Use --rehearsal to label a simulated approval honestly. No command creates a
 GitHub PR, pushes, merges, or deploys. Copilot commands use authenticated
-Copilot services over the network.`);
+Copilot services over the network. Add --interactive to plan/implement/review
+to show the native CLI. The session command requires a terminal and gh login
+or a token environment variable; it never saves the authentication token.`);
     return;
   }
   if (command === 'check-reference') {
-    console.log(await checkReference({ executeTests: true })); return;
+    console.log(await checkReference({ executeTests: true, id: id || 'reference' })); return;
   }
-  const commands = new Set(['prepare', 'baseline', 'plan', 'approve-plan', 'implement', 'verify', 'review', 'record-browser', 'decision', 'serve', 'export-reference']);
+  const commands = new Set(['session', 'rework', 'prepare', 'baseline', 'plan', 'approve-plan', 'implement', 'verify', 'review', 'record-browser', 'decision', 'serve', 'export-reference']);
   if (!commands.has(command)) throw new Error(`Unknown command: ${command}`);
   const dir = workspace(id);
+  if (command === 'session') {
+    try { await interactiveSession(id, values); }
+    catch (error) {
+      if (await exists(metadata(dir, 'state.json'))) await updateState(dir, { lastError: error.message });
+      throw error;
+    }
+    return;
+  }
   if (command === 'prepare') { console.log(`Prepared ${await prepare(id)}`); return; }
-  if (id === 'reference' && command !== 'serve') throw new Error('The saved reference is read-only.');
+  if (SAVED_WORKSPACES.has(id) && command !== 'serve') throw new Error('The saved reference is read-only.');
   if (command === 'serve') {
     const port = Number(values.port);
     if (!Number.isInteger(port) || port < 1 || port > 65535) throw new Error('Port must be an integer from 1 to 65535.');
@@ -521,10 +622,15 @@ Copilot services over the network.`);
   }
   await stateOf(dir);
   try {
-    const actions = { baseline, plan, 'approve-plan': (path) => approvePlan(path, values),
-      implement, verify, review, 'record-browser': recordBrowser, decision: (path) => decide(path, values), 'export-reference': exportReference };
+    const actions = { baseline, rework: interactiveRework, plan: (path) => plan(path, values), 'approve-plan': (path) => approvePlan(path, values),
+      implement: (path) => implement(path, values), verify, review: (path) => review(path, values),
+      'record-browser': recordBrowser, decision: (path) => decide(path, values),
+      'export-reference': (path) => exportReference(path, values) };
     const result = await actions[command](dir);
     console.log(`${command}: complete${result ? `\n${JSON.stringify(result, null, 2)}` : ''}`);
+    if (command === 'review' && values.interactive) {
+      console.log('[FINAL HUMAN GATE] Recommendation only. No release approval, PR, merge, or deployment.');
+    }
   } catch (error) {
     await updateState(dir, { lastError: error.message });
     throw error;

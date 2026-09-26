@@ -28,7 +28,14 @@ async function check(name, fn) {
     report.checks.push({ name, passed: true, ...(details ? { details } : {}) });
     console.log(`PASS ${name}`);
   } catch (error) {
-    report.checks.push({ name, passed: false, error: error.message });
+    const observedUI = await page.evaluate(() => ({
+      feedback: document.querySelector('#feedback')?.textContent,
+      resultState: document.querySelector('#result-banner')?.getAttribute('data-state'),
+      resultTitle: document.querySelector('#result-title')?.textContent,
+      resultDetail: document.querySelector('#result-detail')?.textContent,
+      traces: [...document.querySelectorAll('.trace-row')].map(row => row.textContent),
+    }));
+    report.checks.push({ name, passed: false, error: error.message, observedUI });
     throw error;
   }
 }
@@ -106,6 +113,44 @@ try {
     await page.locator('#send-once').click();
     await readyCount(1);
   });
+  await check('A partially failed batch is not shown as success, and a later retry recovers', async () => {
+    await page.goto(after);
+    let requests = 0;
+    await page.route('**/api/orders', async (route) => {
+      if (route.request().method() === 'POST' && ++requests === 1) {
+        await route.fulfill({ status: 503, contentType: 'application/json',
+          body: JSON.stringify({ error: { code: 'SIMULATED_PARTIAL_OUTAGE' } }) });
+      } else await route.continue();
+    });
+    await page.locator('#send-twice').click();
+    await readyCount(1);
+    await expect(page.locator('#feedback')).toHaveAttribute('data-error', 'true');
+    await expect(page.locator('#result-banner')).not.toHaveAttribute('data-state', 'ok');
+    await expect(page.locator('.trace-row')).toHaveCount(2);
+    await page.unroute('**/api/orders');
+    await page.locator('#send-once').click();
+    await expect(page.locator('#request-count')).toHaveText('3회');
+    await readyCount(1);
+    await expect(page.locator('#result-banner')).toHaveAttribute('data-state', 'ok');
+  });
+  await check('A failed list refresh cannot leave a success banner, and retry recovers', async () => {
+    await page.goto(after);
+    await page.locator('#send-once').click();
+    await readyCount(1);
+    await page.route('**/api/orders?*', route => route.fulfill({
+      status: 503, contentType: 'application/json',
+      body: JSON.stringify({ error: { code: 'SIMULATED_LIST_OUTAGE' } }),
+    }));
+    await page.locator('#send-once').click();
+    await expect(page.locator('#feedback')).toHaveAttribute('data-error', 'true');
+    await expect(page.locator('#feedback')).toContainText('SIMULATED_LIST_OUTAGE');
+    await expect(page.locator('#result-banner')).not.toHaveAttribute('data-state', 'ok');
+    await page.unroute('**/api/orders?*');
+    await page.locator('#send-once').click();
+    await expect(page.locator('#request-count')).toHaveText('3회');
+    await readyCount(1);
+    await expect(page.locator('#result-banner')).toHaveAttribute('data-state', 'ok');
+  });
   await check('Evidence desk distinguishes records from final human approval', async () => {
     await page.goto(`${after}/presenter?tab=review`);
     await expect(page.locator('#artifact')).toContainText('RECOMMENDATION:');
@@ -127,7 +172,7 @@ try {
   await check('No uncaught browser JavaScript errors', async () => assert.deepEqual(errors, []));
 } finally {
   report.completedAt = new Date().toISOString();
-  report.passed = report.checks.length === 9 && report.checks.every((item) => item.passed);
+  report.passed = report.checks.length === 11 && report.checks.every((item) => item.passed);
   await writeFile(resolve(evidence, 'browser-check.json'), `${JSON.stringify(report, null, 2)}\n`);
   await browser.close();
 }

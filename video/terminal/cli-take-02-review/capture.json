@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "runId": "cli-take-02",
+  "captureId": "cli-take-02-review",
+  "stage": "review",
+  "command": [
+    "node",
+    "scripts/workflow.mjs",
+    "review",
+    "cli-take-02",
+    "--interactive"
+  ],
+  "capture": "Unmodified output from an actual pseudo-terminal, not a scripted terminal animation.",
+  "inputOrigin": "automated-rehearsal",
+  "humanApproval": false,
+  "nativePermissions": [],
+  "stages": [
+    {
+      "agent": "demo-reviewer",
+      "sessionId": "a57ef2e0-a2a0-4228-aa6a-c9196a357e54",
+      "at": 1.319421333000264
+    }
+  ],
+  "width": 112,
+  "height": 24,
+  "exitCode": 0,
+  "durationSeconds": 54.448,
+  "complete": true,
+  "castSha256": "be8492a582a9f5dd1fe150e1b9e644f1f1058d7f39d49f451803c463b5b6f6fb"
+}

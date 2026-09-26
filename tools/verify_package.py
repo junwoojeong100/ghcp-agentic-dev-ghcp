@@ -7,6 +7,7 @@ import subprocess
 import tempfile
 import zipfile
 import os
+import hashlib
 
 ROOT = Path(__file__).resolve().parent.parent
 parser = argparse.ArgumentParser()
@@ -26,13 +27,17 @@ with tempfile.TemporaryDirectory(prefix="agentic-kit-check-") as folder:
     demo = kit / "demo"
     assert not (kit / "node_modules").exists()
     assert not (demo / "runs").exists()
-    result = subprocess.run(["node", "scripts/workflow.mjs", "check-reference"],
+    assert not (demo / "cli-reference/.demo/cli-home").exists()
+    manifest = json.loads((kit / "evidence/artifact-manifest.json").read_text())
+    for name, expected in manifest["files"].items():
+        assert hashlib.sha256((kit / name).read_bytes()).hexdigest() == expected, name
+    result = subprocess.run(["node", "scripts/workflow.mjs", "check-reference", "cli-reference"],
                             cwd=demo, env=node_env, capture_output=True, text=True, timeout=60, check=True)
     smoke = r"""
 import assert from 'node:assert/strict';
 import { once } from 'node:events';
 const { serve } = await import('./scripts/workflow.mjs');
-const server = await serve('reference', 0);
+const server = await serve('cli-reference', 0);
 if (!server.listening) await once(server, 'listening');
 const base = `http://127.0.0.1:${server.address().port}`;
 try {
@@ -70,6 +75,8 @@ try {
         "passed": True,
         "freshExtraction": True,
         "runtimeDependenciesInstalled": False,
+        "artifactHashesVerified": len(manifest["files"]),
+        "kitSourceDigest": json.loads((demo / "cli-reference/.demo/state.json").read_text())["verification"]["sourceDigest"],
         "referenceTests": result.stdout.strip(),
         "httpChecks": ["simultaneous duplicate yields one order", "new key yields a second order",
                        "saved replay label", "final human decision remains null", "evidence desk responds"],

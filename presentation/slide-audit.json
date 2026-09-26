@@ -1,7 +1,12 @@
 {
-  "slides": 17,
+  "slides": 18,
+  "audience": "CXO customers",
+  "main_slides": 12,
+  "technical_appendix_slides": 6,
   "all_have_notes": true,
-  "source_digest": "75fdf7cdc1f97375f8323728aa08172c3350b2b69376a7017c1e10288a158a93",
+  "source_digest": "3a35b30aa84720f645f3637e01316f2921393d9d44708623799dcf5001482e9e",
+  "cli_run": "cli-take-02",
+  "cast_sha256": "74cc864e70bb240c783a2eb47fd2b6d36e1bf1f9a2c25f77c72a87a112135a35",
   "actual_test_counts": {
     "acceptance": 16,
     "repository": 17

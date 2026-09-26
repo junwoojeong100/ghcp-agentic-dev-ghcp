@@ -30,12 +30,14 @@ test('workspace identifiers reject traversal and absolute paths', () => {
     assert.throws(() => workspace(id, root));
   }
   assert.equal(workspace('live-01', root), join(root, 'runs/live-01'));
+  assert.equal(workspace('cli-reference', root), join(root, 'cli-reference'));
 });
 
 test('prepare never overwrites an existing workspace', async () => {
   await prepare('existing', root);
   await assert.rejects(prepare('existing', root), /already exists/);
   await assert.rejects(prepare('reference', root), /immutable/);
+  await assert.rejects(prepare('cli-reference', root), /immutable/);
 });
 
 test('implementation is blocked before scope approval', async () => {

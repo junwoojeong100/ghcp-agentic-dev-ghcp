@@ -11,6 +11,13 @@ const after = process.env.AFTER_URL || 'http://127.0.0.1:4312';
 const browser = await chromium.launch({ headless: true, channel: process.env.PLAYWRIGHT_CHANNEL || 'chrome' });
 const report = { startedAt: new Date().toISOString(), browser: browser.version(), clips: [], note: 'Actual local browser recordings. No simulated Copilot responses or real payments.' };
 try {
+  const response = await fetch(`${after}/__demo/evidence`);
+  if (!response.ok) throw new Error(`Cannot read recorded-workspace evidence: HTTP ${response.status}`);
+  const source = await response.json();
+  const expected = JSON.parse(await readFile(resolve(root, 'demo/cli-reference/.demo/state.json'), 'utf8'));
+  if (source.currentDigest !== expected.verification.sourceDigest) throw new Error('Browser footage must show the same source as the recorded CLI run.');
+  report.sourceDigest = source.currentDigest;
+  report.sourceRun = source.state.id;
   for (const scene of config.scenes.filter((item) => item.kind === 'browser')) {
     const context = await browser.newContext({
       viewport: { width: 1440, height: 980 }, locale: 'ko-KR',
@@ -40,37 +47,14 @@ try {
       await page.locator('#send-twice').click();
       await expect(page.locator('#order-count')).toHaveText('1건');
       await page.locator('#order-count').hover();
-      await waitUntil(24);
+      await waitUntil(19);
       await page.locator('#new-order').hover();
-      await waitUntil(26);
+      await waitUntil(21);
       await page.locator('#new-order').click();
       await expect(page.locator('#order-count')).toHaveText('2건');
       await expect(page.locator('#request-count')).toHaveText('3회');
-    } else {
-      await page.goto(`${after}/presenter?tab=${scene.page}`);
-      await expect(page.locator('#mode')).toContainText('SAVED REHEARSAL');
-      await expect(page.locator('#artifact')).not.toHaveText('');
-      if (scene.page === 'tests') {
-        await waitUntil(13);
-        await page.getByRole('button', { name: '재작업 기록', exact: true }).click();
-        await expect(page.locator('#artifact')).toContainText('CHANGES_REQUESTED');
-        await waitUntil(30);
-        await page.getByRole('button', { name: '04 재발 방지', exact: true }).click();
-      }
-      if (scene.page === 'plan') {
-        await waitUntil(18);
-        await page.locator('#artifact').evaluate((element) => element.scrollTo({ top: 330, behavior: 'smooth' }));
-        await waitUntil(29);
-        await page.locator('#artifact').evaluate((element) => element.scrollTo({ top: 0, behavior: 'smooth' }));
-      }
-      if (scene.page === 'review') {
-        await expect(page.locator('#artifact')).toContainText('READY_FOR_HUMAN_REVIEW');
-        await expect(page.locator('#approval')).toHaveText('최종 출시 판단 대기');
-        await waitUntil(17);
-        await page.locator('#artifact').evaluate((element) => element.scrollTo({ top: element.scrollHeight, behavior: 'smooth' }));
-      }
-    }
-    await waitUntil(scene.duration);
+    } else throw new Error(`Browser scene is not an actual customer scenario: ${scene.page}`);
+    await waitUntil(scene.duration + 2);
     await page.close();
     await context.close();
     const original = await video.path();

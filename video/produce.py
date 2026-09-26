@@ -3,6 +3,7 @@ from pathlib import Path
 import argparse
 import hashlib
 import json
+import math
 import subprocess
 from PIL import Image, ImageDraw, ImageFont
 
@@ -26,8 +27,12 @@ def command(args, **kwargs):
 
 
 def duration(path):
-    return float(command(["ffprobe", "-v", "error", "-show_entries", "format=duration",
-                          "-of", "default=noprint_wrappers=1:nokey=1", str(path)]).strip())
+    value = command(["ffprobe", "-v", "error", "-show_entries", "format=duration",
+                     "-of", "default=noprint_wrappers=1:nokey=1", str(path)]).strip()
+    seconds = float(value)
+    if not math.isfinite(seconds) or seconds <= 0:
+        raise ValueError(f"Invalid media duration for {path}: {value}")
+    return seconds
 
 
 def font(size, bold=False):
@@ -82,9 +87,22 @@ def prepare_audio():
         for index, caption in enumerate(scene["captions"], 1):
             fingerprint = hashlib.sha256(f"{CONFIG['voice']}:{CONFIG['rate']}:{caption}".encode()).hexdigest()[:10]
             path = WORK / "audio" / f"{scene['id']}-{index:02d}-{fingerprint}.aiff"
+            if path.exists():
+                try:
+                    duration(path)
+                except ValueError:
+                    print(f"Regenerating interrupted local speech cache: {path.name}", flush=True)
+                    path.unlink()
             if not path.exists():
+                script = path.with_suffix(".input.txt")
+                partial = path.with_suffix(".partial.aiff")
+                script.write_text(caption + "\n", encoding="utf-8")
                 command(["say", "-v", CONFIG["voice"], "-r", str(CONFIG["rate"]),
-                         "-o", str(path)], input=caption)
+                         "-f", str(script), "-o", str(partial)], timeout=120)
+                if duration(partial) <= 0:
+                    raise RuntimeError(f"Local speech generation produced no audio: {scene['id']}")
+                partial.replace(path)
+                script.unlink()
             chunks.append({"path": path, "text": caption, "duration": duration(path)})
         raw = sum(chunk["duration"] for chunk in chunks)
         target = scene["duration"] - 1.0
@@ -121,7 +139,7 @@ def prepare_audio():
             "speechSeconds": round(raw / speed, 3), "endHoldSeconds": round(scene["duration"] - raw / speed, 3),
             "audio": str(wav.relative_to(ROOT)), "captions": scene_subtitles,
         })
-        print(f"Audio {scene['id']}: raw {raw:.1f}s, tempo {speed:.3f}, segment {scene['duration']}s")
+        print(f"Audio {scene['id']}: raw {raw:.1f}s, tempo {speed:.3f}, segment {scene['duration']}s", flush=True)
         absolute += scene["duration"]
     if absolute != CONFIG["totalSeconds"]:
         raise RuntimeError("Chapter durations do not match the promised video length.")
@@ -140,25 +158,28 @@ def draw_frame(scene, index):
     d = ImageDraw.Draw(image)
     d.rectangle((0, 0, 14, H), fill=PURPLE if index < 6 else MINT)
     draw_text(d, scene["eyebrow"], 66, 25, 19, PURPLE, True)
-    draw_text(d, "사전 리허설 · 편집 영상  |  모의 주문 · 실결제 없음", 1170, 25, 18, MUTED, width=690)
+    draw_text(d, "실제 CLI 녹화 · 승인 입력은 자동 리허설", 1200, 25, 18, MUTED, width=665)
     if len(wrap(scene["title"].replace("\n", " "), 51, 1770, True)) != 1:
         raise RuntimeError(f"Video title overflows in {scene['id']}")
     draw_text(d, scene["title"].replace("\n", " "), 64, 70, 51, WHITE, True, width=1770)
     d.line((64, 143, 1855, 143), fill="#2d3a52", width=2)
     d.line((64, 930, 1855, 930), fill="#2d3a52", width=2)
     draw_text(d, f"{index:02d} / 09", 1755, 901, 18, MUTED, width=120)
-    if scene["kind"] == "browser":
+    if scene["kind"] == "terminal":
+        box(d, (62, 156, 1857, 914), "#0d1117", "#34415b", radius=14)
+    elif scene["kind"] == "browser":
         box(d, (62, 156, 1277, 914), "#0a1020", "#34415b", radius=14)
         draw_text(d, "이 장면에서 볼 것", 1320, 196, 22, MUTED, True, width=515)
         draw_text(d, scene["callout"], 1320, 259, 49, MINT if scene["page"] == "after" else PURPLE, True, width=515)
         for i, item in enumerate(scene["bullets"]):
             draw_text(d, f"0{i+1}", 1322, 510 + i * 95, 22, AMBER, True, width=65)
             draw_text(d, item, 1380, 510 + i * 95, 25, WHITE, width=457)
-        draw_text(d, "발표용 보조 화면\nGitHub 제품 UI 아님", 1320, 832, 18, MUTED, width=520)
+        draw_text(d, "실제 브라우저 · 합성 주문 앱\nCopilot이 수정한 코드의 실행 결과" if scene["page"] == "after" else
+                  "실제 브라우저 · 합성 주문 앱\n실결제·고객 데이터 없음", 1320, 832, 18, MUTED, width=520)
     elif scene["kind"] == "title":
         draw_text(d, "고객의 한 문장", 88, 310, 25, MUTED, True)
         draw_text(d, "“다시 눌렀더니,\n주문이 두 건 생겼어요.”", 88, 386, 57, WHITE, True, width=1100)
-        draw_text(d, "계획 · 구현 · 검증 · 검토\n그리고 사람의 최종 판단", 90, 638, 32, PURPLE, width=1100)
+        draw_text(d, "실제 GitHub Copilot CLI\n계획 → 승인 → 코드 수정 → 검토", 90, 638, 32, PURPLE, width=1100)
         box(d, (1295, 241, 1850, 822), PANEL)
         draw_text(d, "같은 요청", 1370, 292, 30, MUTED, True, width=400)
         draw_text(d, "2회", 1370, 355, 111, PURPLE, True, width=440)
@@ -192,13 +213,13 @@ def draw_frame(scene, index):
         draw_text(d, "로컬 승인 기록과 도구 제한은 조직 인증·보호 규칙·보안 격리를 대신하지 않습니다.",
                   91, 844, 23, MUTED, width=1730)
     elif scene["kind"] == "close":
-        draw_text(d, "우리 조직의 첫 한 건은?", 89, 318, 64, WHITE, True, width=1740)
-        for i, label in enumerate(["작은 피해 범위", "명확한 완료 기준", "다시 실행할 근거", "책임 있는 승인자"]):
+        draw_text(d, "개발 생산성을, 비즈니스 실행력으로", 89, 318, 64, WHITE, True, width=1740)
+        for i, label in enumerate(["개발 생산성", "가치 전달 속도", "품질 리스크", "AI 통제"]):
             x = 90 + i * 445
             box(d, (x, 492, x + 410, 713), PANEL)
             draw_text(d, f"0{i+1}", x + 30, 527, 31, MINT, True, width=350)
             draw_text(d, label, x + 30, 602, 34, WHITE, True, width=350)
-        draw_text(d, "에이전트의 수보다, 검토 가능한 업무 결과.", 90, 817, 31, PURPLE, True)
+        draw_text(d, "한 팀, 한 업무로 시작하고 리드타임·재작업·검토 부담을 측정합니다.", 90, 817, 31, PURPLE, True)
     path = WORK / "frames" / f"{scene['id']}.png"
     image.save(path)
     return path
@@ -247,14 +268,18 @@ def render(timing):
         output = WORK / "segments" / f"{scene['id']}.mp4"
         audio = ROOT / chapter["audio"]
         args = ["ffmpeg", "-hide_banner", "-loglevel", "error", "-y"]
-        if scene["kind"] == "browser":
-            clip = VIDEO / "recordings" / f"{scene['id']}.webm"
+        if scene["kind"] in {"browser", "terminal"}:
+            terminal = scene["kind"] == "terminal"
+            clip = VIDEO / "recordings" / f"{scene['id']}{'.mp4' if terminal else '.webm'}"
             if not clip.exists():
-                raise RuntimeError(f"Missing actual browser recording: {clip}")
+                raise RuntimeError(f"Missing actual recording: {clip}")
+            if duration(clip) < scene["duration"] - .15:
+                raise RuntimeError(f"Actual recording is too short: {clip}")
             args += ["-i", str(clip), "-loop", "1", "-framerate", "25", "-i", str(frame), "-i", str(audio), "-i", str(captions)]
+            width = 1792 if terminal else 1210
             graph = (
-                "[0:v]trim=start=1,setpts=PTS-STARTPTS,fps=25,scale=1210:754:force_original_aspect_ratio=decrease,"
-                "pad=1210:754:(ow-iw)/2:(oh-ih)/2:color=0x101727,setsar=1,"
+                f"[0:v]setpts=PTS-STARTPTS,fps=25,scale={width}:754:force_original_aspect_ratio=decrease,"
+                f"pad={width}:754:(ow-iw)/2:(oh-ih)/2:color=0x0d1117,setsar=1,"
                 "tpad=stop_mode=clone:stop_duration=300[screen];"
                 "[1:v][screen]overlay=64:158:shortest=1[base];"
                 "[base][3:v]overlay=0:934:shortest=1,format=yuv420p[v]"
@@ -277,7 +302,7 @@ def render(timing):
     metadata = json.loads(command(["ffprobe", "-v", "error", "-show_format", "-show_streams",
                                    "-of", "json", str(final)]))
     (VIDEO / "media-metadata.json").write_text(json.dumps(metadata, indent=2) + "\n")
-    if abs(duration(final) - 300) > .25:
+    if abs(duration(final) - CONFIG["totalSeconds"]) > .25:
         raise RuntimeError("Final video is not approximately five minutes.")
     command(["ffmpeg", "-hide_banner", "-loglevel", "error", "-i", str(final), "-f", "null", "-"])
     print(f"Saved {final}: {duration(final):.3f}s", flush=True)

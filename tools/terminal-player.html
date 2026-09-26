@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="ko">
+<meta charset="utf-8">
+<title>Actual GitHub Copilot CLI recording</title>
+<link rel="stylesheet" href="/xterm.css">
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: #0d1117; color: #e6edf3; }
+  #terminal { padding: 10px 18px; width: max-content; margin: 0 auto; }
+  .xterm-viewport { overflow: hidden !important; }
+  #controls { padding: 12px 24px; font: 15px system-ui; background: #161b22; }
+  #controls input { width: 50%; vertical-align: middle; }
+  button { margin-right: 12px; padding: 6px 15px; }
+  body.capture #controls { display: none; }
+</style>
+<div id="controls">
+  <button id="play">재생</button>
+  <input id="position" type="range" min="0" value="0" step="0.1" aria-label="재생 위치">
+  <span id="time">0.0s</span>
+  <div id="provenance">실제 Copilot CLI 터미널 녹화 · 저장본 재생</div>
+</div>
+<div id="terminal"></div>
+<script src="/xterm.js"></script>
+<script>
+  const terminal = new Terminal({
+    cols: 112, rows: 28, fontSize: 22, lineHeight: 1.0,
+    fontFamily: 'Menlo, Monaco, "Apple SD Gothic Neo", monospace',
+    cursorBlink: false, scrollback: 5000, allowProposedApi: false,
+    theme: { background: '#0d1117', foreground: '#e6edf3', cursor: '#79c0ff' },
+  });
+  terminal.open(document.querySelector('#terminal'));
+  let events = [], cursor = 0, current = -1, playing = false, lastTick = 0;
+  window.loadCapture = async (capture) => {
+    terminal.resize(capture.header.width, capture.header.height);
+    terminal.reset();
+    events = capture.events;
+    cursor = 0;
+    current = -1;
+    document.querySelector('#position').max = events.at(-1)?.[0] || 0;
+    document.querySelector('#provenance').textContent = '실제 Copilot CLI 터미널 녹화 · 저장본 재생 · ' +
+      (capture.inputOrigin === 'automated-rehearsal' ? '승인 입력은 자동 리허설' : '입력 출처는 capture.json 참고 · 조직 승인 아님');
+    if (capture.captureMode) document.body.classList.add('capture');
+    await document.fonts.ready;
+  };
+  window.seek = async (seconds) => {
+    if (seconds < current) {
+      terminal.reset();
+      cursor = 0;
+    }
+    const chunks = [];
+    while (cursor < events.length && events[cursor][0] <= seconds) {
+      if (events[cursor][1] === 'o') chunks.push(events[cursor][2]);
+      cursor++;
+    }
+    if (chunks.length) await new Promise(resolve => terminal.write(chunks.join(''), resolve));
+    current = seconds;
+    document.querySelector('#position').value = seconds;
+    document.querySelector('#time').textContent = `${seconds.toFixed(1)}s`;
+    if (chunks.length) await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+    return chunks.length > 0;
+  };
+  window.screenText = () => {
+    const buffer = terminal.buffer.active;
+    return Array.from({ length: terminal.rows }, (_, row) =>
+      buffer.getLine(buffer.viewportY + row)?.translateToString(true) || '').join('\n');
+  };
+  window.terminalSize = () => {
+    const element = document.querySelector('#terminal');
+    return { width: element.offsetWidth, height: element.offsetHeight };
+  };
+  document.querySelector('#position').addEventListener('input', event => window.seek(Number(event.target.value)));
+  document.querySelector('#play').addEventListener('click', () => {
+    playing = !playing;
+    document.querySelector('#play').textContent = playing ? '일시 정지' : '재생';
+    lastTick = performance.now();
+  });
+  async function tick(now) {
+    if (playing) {
+      await window.seek(Math.min(Number(document.querySelector('#position').max), Math.max(0, current) + (now - lastTick) / 1000));
+      if (current >= Number(document.querySelector('#position').max)) playing = false;
+    }
+    lastTick = now;
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+  window.captureReady = fetch('/capture.json').then(response => response.json()).then(window.loadCapture);
+</script>
+</html>

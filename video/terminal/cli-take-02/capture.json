@@ -1,0 +1,116 @@
+{
+  "schema": 1,
+  "runId": "cli-take-02",
+  "command": [
+    "node",
+    "scripts/workflow.mjs",
+    "session",
+    "cli-take-02",
+    "--rehearsal"
+  ],
+  "capture": "Unmodified output from an actual pseudo-terminal, not a scripted terminal animation.",
+  "inputOrigin": "automated-rehearsal",
+  "humanApproval": false,
+  "nativePermissions": [
+    {
+      "at": 110.939431,
+      "kind": "native-approve-once",
+      "input": "\r",
+      "origin": "automated-rehearsal",
+      "evidence": {
+        "toolCallId": "custom_call_hYmfnJjagSD3eQ9v0qfde1nq",
+        "paths": [
+          "src/app.mjs",
+          "public/app.mjs",
+          "public/index.html",
+          "tests/app.test.mjs"
+        ],
+        "menuObserved": "1. Yes"
+      }
+    },
+    {
+      "at": 147.0279,
+      "kind": "native-approve-once",
+      "input": "\r",
+      "origin": "automated-rehearsal",
+      "evidence": {
+        "toolCallId": "custom_call_hYmfnJjagSD3eQ9v0qfde1nq",
+        "paths": [
+          "src/app.mjs",
+          "public/app.mjs",
+          "public/index.html",
+          "tests/app.test.mjs"
+        ],
+        "menuObserved": "cli-take-02/public/app.mjs?"
+      }
+    },
+    {
+      "at": 363.390455,
+      "kind": "native-approve-once",
+      "input": "\r",
+      "origin": "automated-rehearsal",
+      "evidence": {
+        "toolCallId": "custom_call_hYmfnJjagSD3eQ9v0qfde1nq",
+        "paths": [
+          "src/app.mjs",
+          "public/app.mjs",
+          "public/index.html",
+          "tests/app.test.mjs"
+        ],
+        "menuObserved": "index.html?"
+      }
+    },
+    {
+      "at": 363.848108,
+      "kind": "native-approve-once",
+      "input": "\r",
+      "origin": "automated-rehearsal",
+      "evidence": {
+        "toolCallId": "custom_call_hYmfnJjagSD3eQ9v0qfde1nq",
+        "paths": [
+          "src/app.mjs",
+          "public/app.mjs",
+          "public/index.html",
+          "tests/app.test.mjs"
+        ],
+        "menuObserved": "app.test.mjs?"
+      }
+    },
+    {
+      "at": 385.692939,
+      "kind": "native-approve-once",
+      "input": "\r",
+      "origin": "automated-rehearsal",
+      "evidence": {
+        "toolCallId": "custom_call_agkpc9LpFWkINCcpZu5ig45i",
+        "paths": [
+          "tests/app.test.mjs"
+        ],
+        "menuObserved": "1. Yes"
+      }
+    }
+  ],
+  "stages": [
+    {
+      "agent": "demo-planner",
+      "sessionId": "cb4077cb-c281-4ea3-839f-15426670a198",
+      "at": 1.8178628750001735
+    },
+    {
+      "agent": "demo-implementer",
+      "sessionId": "2603015b-74c0-4f57-a15b-39c487ddb49d",
+      "at": 46.38880195799993
+    },
+    {
+      "agent": "demo-reviewer",
+      "sessionId": "56a47c69-4074-4884-8236-ae672b612f64",
+      "at": 402.9210557910001
+    }
+  ],
+  "width": 112,
+  "height": 24,
+  "exitCode": 0,
+  "durationSeconds": 437.215,
+  "complete": true,
+  "castSha256": "74cc864e70bb240c783a2eb47fd2b6d36e1bf1f9a2c25f77c72a87a112135a35"
+}

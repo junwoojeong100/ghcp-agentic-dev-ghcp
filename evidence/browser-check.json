@@ -1,7 +1,7 @@
 {
-  "recordedAt": "2026-09-25T23:25:07.307Z",
-  "before": "http://127.0.0.1:4311",
-  "after": "http://127.0.0.1:4312",
+  "recordedAt": "2026-09-26T02:23:18.503Z",
+  "before": "http://127.0.0.1:4431",
+  "after": "http://127.0.0.1:4432",
   "browser": "154.0.8037.58",
   "checks": [
     {
@@ -11,8 +11,8 @@
         "requests": 2,
         "orders": 2,
         "traces": [
-          "응답 1 · 201 · ORD-0011 · 새 주문 생성",
-          "응답 2 · 201 · ORD-0012 · 새 주문 생성"
+          "응답 1 · 201 · ORD-0005 · 새 주문 생성",
+          "응답 2 · 201 · ORD-0006 · 새 주문 생성"
         ]
       }
     },
@@ -23,8 +23,8 @@
         "requests": 2,
         "orders": 1,
         "traces": [
-          "응답 1 · 201 · ORD-0008 · 새 주문 생성",
-          "응답 2 · 200 · ORD-0008 · 기존 주문 결과 재사용"
+          "응답 1 · 201 · ORD-0009 · 새 주문 생성",
+          "응답 2 · 200 · ORD-0009 · 기존 주문 결과 재사용"
         ]
       }
     },
@@ -53,6 +53,14 @@
       "passed": true
     },
     {
+      "name": "A partially failed batch is not shown as success, and a later retry recovers",
+      "passed": true
+    },
+    {
+      "name": "A failed list refresh cannot leave a success banner, and retry recovers",
+      "passed": true
+    },
+    {
       "name": "Evidence desk distinguishes records from final human approval",
       "passed": true
     },
@@ -71,8 +79,8 @@
     "presentation/assets/06-plan.png"
   ],
   "realPayments": false,
-  "sourceDigest": "75fdf7cdc1f97375f8323728aa08172c3350b2b69376a7017c1e10288a158a93",
-  "savedReplay": true,
-  "completedAt": "2026-09-25T23:25:13.324Z",
+  "sourceDigest": "3a35b30aa84720f645f3637e01316f2921393d9d44708623799dcf5001482e9e",
+  "savedReplay": false,
+  "completedAt": "2026-09-26T02:23:27.117Z",
   "passed": true
 }

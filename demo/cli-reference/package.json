@@ -1,0 +1,10 @@
+{
+  "name": "order-recovery-desk",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "start": "node src/server.mjs",
+    "test": "node --test tests/app.test.mjs"
+  }
+}

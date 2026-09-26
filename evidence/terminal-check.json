@@ -1,0 +1,46 @@
+{
+  "recordedAt": "2026-09-26T02:35:16.930Z",
+  "runId": "cli-take-02",
+  "captures": [
+    {
+      "id": "cli-take-02",
+      "sha256": "74cc864e70bb240c783a2eb47fd2b6d36e1bf1f9a2c25f77c72a87a112135a35",
+      "rawSeconds": 437.215,
+      "exitCode": 0,
+      "workflowSucceeded": true,
+      "nativeApprovals": 5
+    },
+    {
+      "id": "cli-take-02-rework",
+      "sha256": "706d6779190e43cf957718389d415eedd20bc2260ec4e25f3d9ca8e137c5501d",
+      "rawSeconds": 194.447,
+      "exitCode": 1,
+      "workflowSucceeded": false,
+      "nativeApprovals": 7
+    },
+    {
+      "id": "cli-take-02-rework-02",
+      "sha256": "c46b0c0d83c91d7c075d8cbb7ccc168c3078426ea44a121ab5c2046412ecec92",
+      "rawSeconds": 85.62,
+      "exitCode": 0,
+      "workflowSucceeded": true,
+      "nativeApprovals": 1
+    },
+    {
+      "id": "cli-take-02-review",
+      "sha256": "be8492a582a9f5dd1fe150e1b9e644f1f1058d7f39d49f451803c463b5b6f6fb",
+      "rawSeconds": 54.448,
+      "exitCode": 0,
+      "workflowSucceeded": true,
+      "nativeApprovals": 0
+    }
+  ],
+  "nativeApprovals": 13,
+  "sourceDigest": "3a35b30aa84720f645f3637e01316f2921393d9d44708623799dcf5001482e9e",
+  "approvalInputOrigin": "automated-rehearsal",
+  "humanApproval": false,
+  "terminalSeconds": 212,
+  "totalSeconds": 300,
+  "terminalShare": 0.7066666666666667,
+  "passed": true
+}
