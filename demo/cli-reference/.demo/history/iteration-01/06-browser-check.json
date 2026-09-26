@@ -1,0 +1,76 @@
+{
+  "recordedAt": "2026-09-26T02:13:30.316Z",
+  "before": "http://127.0.0.1:4431",
+  "after": "http://127.0.0.1:4432",
+  "browser": "154.0.8037.58",
+  "checks": [
+    {
+      "name": "Before: two concurrent identical requests create two orders",
+      "passed": true,
+      "details": {
+        "requests": 2,
+        "orders": 2,
+        "traces": [
+          "응답 1 · 201 · ORD-0003 · 새 주문 생성",
+          "응답 2 · 201 · ORD-0004 · 새 주문 생성"
+        ]
+      }
+    },
+    {
+      "name": "After: two concurrent identical requests create one order and show replay",
+      "passed": true,
+      "details": {
+        "requests": 2,
+        "orders": 1,
+        "traces": [
+          "응답 1 · 201 · ORD-0005 · 새 주문 생성",
+          "응답 2 · 200 · ORD-0005 · 기존 주문 결과 재사용"
+        ]
+      }
+    },
+    {
+      "name": "A legitimate separate new order still creates a second order",
+      "passed": true,
+      "details": {
+        "requests": 3,
+        "orders": 2
+      }
+    },
+    {
+      "name": "Retrying the latest order does not add another order",
+      "passed": true
+    },
+    {
+      "name": "Normal button suppresses overlapping duplicate clicks",
+      "passed": true
+    },
+    {
+      "name": "A separate new order can be the first action without false expected counts",
+      "passed": true
+    },
+    {
+      "name": "Service errors are visible and controls recover",
+      "passed": false,
+      "error": "expect(locator).toContainText(expected) failed\n\nLocator: locator('#feedback')\nExpected substring: \"SIMULATED_OUTAGE\"\nReceived string:    \"1개 요청 중 1개가 실패했습니다. 각 응답과 현재 주문 목록을 확인하세요. 실제 결제는 실행하지 않았습니다.\"\nTimeout: 5000ms\n\nCall log:\n  - Expect \"toContainText\" locator('#feedback') with timeout 5000ms\n  - waiting for locator('#feedback')\n    14 × locator resolved to <p id=\"feedback\" role=\"status\" data-error=\"true\" aria-live=\"polite\">1개 요청 중 1개가 실패했습니다. 각 응답과 현재 주문 목록을 확인하세요. 실제 결제는…</p>\n       - unexpected value \"1개 요청 중 1개가 실패했습니다. 각 응답과 현재 주문 목록을 확인하세요. 실제 결제는 실행하지 않았습니다.\"\n",
+      "observedUI": {
+        "feedback": "1개 요청 중 1개가 실패했습니다. 각 응답과 현재 주문 목록을 확인하세요. 실제 결제는 실행하지 않았습니다.",
+        "resultState": "ok",
+        "resultTitle": "의도한 주문 수와 다릅니다",
+        "resultDetail": "의도한 주문 1건 / 실제 생성 0건",
+        "traces": [
+          "응답 1 · 실패 · HTTP 503 · SIMULATED_OUTAGE"
+        ]
+      }
+    }
+  ],
+  "screenshots": [
+    "presentation/assets/01-before.png",
+    "presentation/assets/02-after.png",
+    "presentation/assets/03-new-order.png"
+  ],
+  "realPayments": false,
+  "sourceDigest": "c0e3ade8b089c28ccb5160e74f55cfcc6957732723c02e637bead8328a3fd402",
+  "savedReplay": false,
+  "completedAt": "2026-09-26T02:13:41.871Z",
+  "passed": false
+}

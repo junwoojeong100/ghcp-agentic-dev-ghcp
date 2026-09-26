@@ -1,0 +1,141 @@
+# Suite: repository
+TAP version 13
+# file:///Users/junwoojeong/GitHub/ghcp-agentic-dev-ghcp/demo/runs/cli-take-02/tests/app.test.mjs:232
+# }));
+#   ^
+# SyntaxError: Unexpected token ')'
+#     at compileSourceTextModule (node:internal/modules/esm/utils:344:16)
+#     at ModuleLoader.moduleStrategy (node:internal/modules/esm/translators:105:18)
+#     at \#translate (node:internal/modules/esm/loader:534:12)
+#     at ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:581:27)
+#     at async ModuleJob._link (node:internal/modules/esm/module_job:116:19)
+# Node.js v22.16.0
+# Subtest: /Users/junwoojeong/GitHub/ghcp-agentic-dev-ghcp/demo/runs/cli-take-02/tests/app.test.mjs
+not ok 1 - /Users/junwoojeong/GitHub/ghcp-agentic-dev-ghcp/demo/runs/cli-take-02/tests/app.test.mjs
+  ---
+  duration_ms: 44.012167
+  type: 'test'
+  location: '/Users/junwoojeong/GitHub/ghcp-agentic-dev-ghcp/demo/runs/cli-take-02/tests/app.test.mjs:1:1'
+  failureType: 'testCodeFailure'
+  exitCode: 1
+  signal: ~
+  error: 'test failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 51.265958
+
+# Suite: acceptance
+TAP version 13
+# Subtest: AC2: sequential retries reuse the same order
+ok 1 - AC2: sequential retries reuse the same order
+  ---
+  duration_ms: 57.199417
+  type: 'test'
+  ...
+# Subtest: AC2: five simultaneous retries create exactly one order
+ok 2 - AC2: five simultaneous retries create exactly one order
+  ---
+  duration_ms: 46.685208
+  type: 'test'
+  ...
+# Subtest: AC3: same key with different quantity is rejected
+ok 3 - AC3: same key with different quantity is rejected
+  ---
+  duration_ms: 37.68875
+  type: 'test'
+  ...
+# Subtest: AC3: same key with different productId is rejected
+ok 4 - AC3: same key with different productId is rejected
+  ---
+  duration_ms: 31.532791
+  type: 'test'
+  ...
+# Subtest: AC3: conflicting concurrent payloads cannot overwrite an in-flight request
+ok 5 - AC3: conflicting concurrent payloads cannot overwrite an in-flight request
+  ---
+  duration_ms: 34.590917
+  type: 'test'
+  ...
+# Subtest: AC4: a separate new order remains possible
+ok 6 - AC4: a separate new order remains possible
+  ---
+  duration_ms: 58.473875
+  type: 'test'
+  ...
+# Subtest: AC4: identical keys in different checkout scopes are independent
+ok 7 - AC4: identical keys in different checkout scopes are independent
+  ---
+  duration_ms: 58.783416
+  type: 'test'
+  ...
+# Subtest: AC1: missing key is rejected before creating an order
+ok 8 - AC1: missing key is rejected before creating an order
+  ---
+  duration_ms: 3.240042
+  type: 'test'
+  ...
+# Subtest: AC1: short key is rejected before creating an order
+ok 9 - AC1: short key is rejected before creating an order
+  ---
+  duration_ms: 3.037792
+  type: 'test'
+  ...
+# Subtest: AC1: invalid characters key is rejected before creating an order
+ok 10 - AC1: invalid characters key is rejected before creating an order
+  ---
+  duration_ms: 2.34325
+  type: 'test'
+  ...
+# Subtest: AC1: too long key is rejected before creating an order
+ok 11 - AC1: too long key is rejected before creating an order
+  ---
+  duration_ms: 1.896625
+  type: 'test'
+  ...
+# Subtest: AC1: valid 8- and 80-character keys are accepted
+ok 12 - AC1: valid 8- and 80-character keys are accepted
+  ---
+  duration_ms: 55.797583
+  type: 'test'
+  ...
+# Subtest: AC5: invalid order {"quantity":0} does not consume a key
+ok 13 - AC5: invalid order {"quantity":0} does not consume a key
+  ---
+  duration_ms: 29.974167
+  type: 'test'
+  ...
+# Subtest: AC5: invalid order {"quantity":1.5} does not consume a key
+ok 14 - AC5: invalid order {"quantity":1.5} does not consume a key
+  ---
+  duration_ms: 30.89275
+  type: 'test'
+  ...
+# Subtest: AC5: invalid order {"productId":"UNKNOWN"} does not consume a key
+ok 15 - AC5: invalid order {"productId":"UNKNOWN"} does not consume a key
+  ---
+  duration_ms: 30.02825
+  type: 'test'
+  ...
+# Subtest: AC5: health check and unknown-route behavior remain unchanged
+ok 16 - AC5: health check and unknown-route behavior remain unchanged
+  ---
+  duration_ms: 2.849291
+  type: 'test'
+  ...
+1..16
+# tests 16
+# suites 0
+# pass 16
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 565.385166

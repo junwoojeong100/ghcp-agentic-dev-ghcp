@@ -1,0 +1,36 @@
+{
+  "recordedAt": "2026-09-26T02:09:54.387Z",
+  "sourceDigest": "c0e3ade8b089c28ccb5160e74f55cfcc6957732723c02e637bead8328a3fd402",
+  "node": "v22.16.0",
+  "changed": [
+    "public/app.mjs",
+    "public/index.html",
+    "src/app.mjs",
+    "tests/app.test.mjs"
+  ],
+  "scopePassed": true,
+  "browserVerified": false,
+  "note": "Repository and HTTP checks may pass, but a separate browser check failed. Read 06-browser-check.json.",
+  "suites": [
+    {
+      "name": "repository",
+      "exitCode": 0,
+      "tests": 14,
+      "pass": 14,
+      "fail": 0,
+      "skipped": 0,
+      "cancelled": 0
+    },
+    {
+      "name": "acceptance",
+      "exitCode": 0,
+      "tests": 16,
+      "pass": 16,
+      "fail": 0,
+      "skipped": 0,
+      "cancelled": 0
+    }
+  ],
+  "passed": true,
+  "browserRecordedAt": "2026-09-26T02:13:30.316Z"
+}

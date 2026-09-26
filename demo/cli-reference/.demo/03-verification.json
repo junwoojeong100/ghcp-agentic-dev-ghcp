@@ -1,0 +1,36 @@
+{
+  "recordedAt": "2026-09-26T02:20:37.845Z",
+  "sourceDigest": "3a35b30aa84720f645f3637e01316f2921393d9d44708623799dcf5001482e9e",
+  "node": "v22.16.0",
+  "changed": [
+    "public/app.mjs",
+    "public/index.html",
+    "src/app.mjs",
+    "tests/app.test.mjs"
+  ],
+  "scopePassed": true,
+  "browserVerified": true,
+  "note": "Repository, HTTP acceptance and separately executed browser checks passed.",
+  "suites": [
+    {
+      "name": "repository",
+      "exitCode": 0,
+      "tests": 17,
+      "pass": 17,
+      "fail": 0,
+      "skipped": 0,
+      "cancelled": 0
+    },
+    {
+      "name": "acceptance",
+      "exitCode": 0,
+      "tests": 16,
+      "pass": 16,
+      "fail": 0,
+      "skipped": 0,
+      "cancelled": 0
+    }
+  ],
+  "passed": true,
+  "browserRecordedAt": "2026-09-26T02:23:18.503Z"
+}

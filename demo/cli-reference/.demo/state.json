@@ -1,0 +1,201 @@
+{
+  "schema": 1,
+  "id": "cli-take-02",
+  "createdAt": "2026-09-26T02:03:12.129Z",
+  "updatedAt": "2026-09-26T02:24:27.931Z",
+  "mode": "rehearsal",
+  "baselineCommit": "d4a69d375a19901a7b626ecbcb99c4f7d56b7f2b",
+  "baselineDigest": "8d24934a67d7f2fcd621e3310a82ebe7d31a9ea2516c83e83c6d4e54c4491828",
+  "allowedFiles": [
+    "src/app.mjs",
+    "public/index.html",
+    "public/app.mjs",
+    "tests/app.test.mjs"
+  ],
+  "plan": {
+    "hash": "04d5f98587587176e7498950149785a5ad7dc869f651beee94947878154e3ab1",
+    "completedAt": "2026-09-26T02:03:50.790Z",
+    "cliVersion": "GitHub Copilot CLI 1.0.88.\nRun 'copilot update' to check for updates."
+  },
+  "planApproval": {
+    "kind": "rehearsal-scope-approval",
+    "by": "automated-video-rehearsal",
+    "note": "Automated rehearsal input, not human approval.",
+    "recordedAt": "2026-09-26T02:03:57.572Z",
+    "planHash": "04d5f98587587176e7498950149785a5ad7dc869f651beee94947878154e3ab1",
+    "requestHash": "d3b5f0298290d8d356ef89d5c48aadd0b96a7e9091c93d9667a94fe3b0c7d502",
+    "baselineCommit": "d4a69d375a19901a7b626ecbcb99c4f7d56b7f2b",
+    "allowedFiles": [
+      "src/app.mjs",
+      "public/index.html",
+      "public/app.mjs",
+      "tests/app.test.mjs"
+    ],
+    "disclaimer": "Local demonstration record only; not an authenticated organizational approval."
+  },
+  "implementation": {
+    "completedAt": "2026-09-26T02:20:36.548Z",
+    "changed": [
+      "public/app.mjs",
+      "public/index.html",
+      "src/app.mjs",
+      "tests/app.test.mjs"
+    ],
+    "sourceDigest": "3a35b30aa84720f645f3637e01316f2921393d9d44708623799dcf5001482e9e",
+    "cliVersion": "GitHub Copilot CLI 1.0.88.\nRun 'copilot update' to check for updates."
+  },
+  "verification": {
+    "recordedAt": "2026-09-26T02:20:37.845Z",
+    "sourceDigest": "3a35b30aa84720f645f3637e01316f2921393d9d44708623799dcf5001482e9e",
+    "node": "v22.16.0",
+    "changed": [
+      "public/app.mjs",
+      "public/index.html",
+      "src/app.mjs",
+      "tests/app.test.mjs"
+    ],
+    "scopePassed": true,
+    "browserVerified": true,
+    "note": "Repository, HTTP acceptance and separately executed browser checks passed.",
+    "suites": [
+      {
+        "name": "repository",
+        "exitCode": 0,
+        "tests": 17,
+        "pass": 17,
+        "fail": 0,
+        "skipped": 0,
+        "cancelled": 0
+      },
+      {
+        "name": "acceptance",
+        "exitCode": 0,
+        "tests": 16,
+        "pass": 16,
+        "fail": 0,
+        "skipped": 0,
+        "cancelled": 0
+      }
+    ],
+    "passed": true,
+    "browserRecordedAt": "2026-09-26T02:23:18.503Z"
+  },
+  "review": {
+    "recommendation": "READY_FOR_HUMAN_REVIEW",
+    "sourceDigest": "3a35b30aa84720f645f3637e01316f2921393d9d44708623799dcf5001482e9e",
+    "hash": "654066c472c6dbe50e8fd8039498612d830d1c88d5580e7d2d31aef9e2345324",
+    "completedAt": "2026-09-26T02:24:27.916Z",
+    "cliVersion": "GitHub Copilot CLI 1.0.88.\nRun 'copilot update' to check for updates."
+  },
+  "decision": null,
+  "lastError": null,
+  "baselineTests": {
+    "recordedAt": "2026-09-26T02:03:13.177Z",
+    "suites": [
+      {
+        "name": "repository",
+        "exitCode": 0,
+        "tests": 6,
+        "pass": 6,
+        "fail": 0,
+        "skipped": 0,
+        "cancelled": 0
+      },
+      {
+        "name": "acceptance",
+        "exitCode": 1,
+        "tests": 16,
+        "pass": 7,
+        "fail": 9,
+        "skipped": 0,
+        "cancelled": 0
+      }
+    ]
+  },
+  "browserVerification": {
+    "recordedAt": "2026-09-26T02:23:18.503Z",
+    "before": "http://127.0.0.1:4431",
+    "after": "http://127.0.0.1:4432",
+    "browser": "154.0.8037.58",
+    "checks": [
+      {
+        "name": "Before: two concurrent identical requests create two orders",
+        "passed": true,
+        "details": {
+          "requests": 2,
+          "orders": 2,
+          "traces": [
+            "응답 1 · 201 · ORD-0005 · 새 주문 생성",
+            "응답 2 · 201 · ORD-0006 · 새 주문 생성"
+          ]
+        }
+      },
+      {
+        "name": "After: two concurrent identical requests create one order and show replay",
+        "passed": true,
+        "details": {
+          "requests": 2,
+          "orders": 1,
+          "traces": [
+            "응답 1 · 201 · ORD-0009 · 새 주문 생성",
+            "응답 2 · 200 · ORD-0009 · 기존 주문 결과 재사용"
+          ]
+        }
+      },
+      {
+        "name": "A legitimate separate new order still creates a second order",
+        "passed": true,
+        "details": {
+          "requests": 3,
+          "orders": 2
+        }
+      },
+      {
+        "name": "Retrying the latest order does not add another order",
+        "passed": true
+      },
+      {
+        "name": "Normal button suppresses overlapping duplicate clicks",
+        "passed": true
+      },
+      {
+        "name": "A separate new order can be the first action without false expected counts",
+        "passed": true
+      },
+      {
+        "name": "Service errors are visible and controls recover",
+        "passed": true
+      },
+      {
+        "name": "A partially failed batch is not shown as success, and a later retry recovers",
+        "passed": true
+      },
+      {
+        "name": "A failed list refresh cannot leave a success banner, and retry recovers",
+        "passed": true
+      },
+      {
+        "name": "Evidence desk distinguishes records from final human approval",
+        "passed": true
+      },
+      {
+        "name": "No uncaught browser JavaScript errors",
+        "passed": true
+      }
+    ],
+    "screenshots": [
+      "presentation/assets/01-before.png",
+      "presentation/assets/02-after.png",
+      "presentation/assets/03-new-order.png",
+      "presentation/assets/04-review.png",
+      "presentation/assets/05-verification.png",
+      "presentation/assets/07-rework.png",
+      "presentation/assets/06-plan.png"
+    ],
+    "realPayments": false,
+    "sourceDigest": "3a35b30aa84720f645f3637e01316f2921393d9d44708623799dcf5001482e9e",
+    "savedReplay": false,
+    "completedAt": "2026-09-26T02:23:27.117Z",
+    "passed": true
+  }
+}
