@@ -1,4 +1,4 @@
-"""Build the editable Korean Copilot CLI deck from the recorded, verified run."""
+"""Build the Korean Copilot introduction and CXO deck with verified CLI evidence."""
 from pathlib import Path
 import json
 from PIL import Image
@@ -32,10 +32,10 @@ C = {
 }
 prs = Presentation()
 prs.slide_width, prs.slide_height = Inches(W), Inches(H)
-prs.core_properties.title = "GitHub Copilot CLI: 실제 실행과 승인으로 문제 해결"
-prs.core_properties.subject = "CXO 브리핑: 개발 생산성 · 가치 전달 속도 · 품질 리스크 · 통제 가능한 AI 도입"
+prs.core_properties.title = "GitHub Copilot: 제품 소개부터 실제 에이전트 실행까지"
+prs.core_properties.subject = "CXO 브리핑: Copilot 개요 · 서피스 · 작업 모드 · 에이전트 활용 · 실제 CLI 데모"
 prs.core_properties.author = "GitHub Copilot presenter kit"
-prs.core_properties.keywords = "GitHub Copilot CLI, human in the loop, custom agents, CXO"
+prs.core_properties.keywords = "GitHub Copilot, surfaces, modes, CLI, cloud agent, custom agents, CXO"
 
 
 def rgb(value):
@@ -117,7 +117,7 @@ def new_slide(eyebrow, title, subtitle="", dark=False, title_size=32):
     if subtitle:
         text(slide, subtitle, .61, 2.13, 12.0, .45, 15, "lighttext" if dark else "muted")
     line(slide, .59, 7.05, 12.73, 7.05, "panel" if dark else "line")
-    text(slide, "GitHub Copilot CLI  /  Real execution. Human control.", .61, 7.16, 10.8, .19, 8.5, "muted")
+    text(slide, "GitHub Copilot  /  CXO Briefing. Real execution. Human control.", .61, 7.16, 10.8, .19, 8.5, "muted")
     text(slide, f"{len(prs.slides):02d}", 12.08, 7.12, .63, .26, 11, "muted", align=PP_ALIGN.RIGHT)
     return slide
 
@@ -165,6 +165,19 @@ acceptance = next(s for s in STATE["verification"]["suites"] if s["name"] == "ac
 baseline = next(s for s in STATE["baselineTests"]["suites"] if s["name"] == "acceptance")
 CLI = "demo/cli-reference/.demo/"
 DOCS = "https://docs.github.com/en/copilot"
+INTRO_SOURCES = {
+    "overview": f"{DOCS}/get-started/about-github-copilot",
+    "ide": f"{DOCS}/how-tos/chat-with-copilot/chat-in-ide",
+    "matrix": f"{DOCS}/reference/copilot-feature-matrix",
+    "cli": f"{DOCS}/concepts/agents/copilot-cli/about-copilot-cli",
+    "autopilot": f"{DOCS}/concepts/agents/copilot-cli/autopilot",
+    "app": f"{DOCS}/get-started/quickstart-copilot-app",
+    "mobile": f"{DOCS}/how-tos/copilot-on-github/chat-with-copilot/chat-in-mobile",
+    "cloud": f"{DOCS}/concepts/agents/cloud-agent/about-cloud-agent",
+    "review": f"{DOCS}/concepts/agents/code-review",
+    "customization": f"{DOCS}/reference/customization-cheat-sheet",
+    "fleet": f"{DOCS}/how-tos/copilot-cli/use-copilot-cli/speed-up-task-completion",
+}
 
 # 01
 s = new_slide("GITHUB COPILOT / CXO BRIEFING", "GitHub Copilot\n개발 생산성의 다음 단계.", dark=True, title_size=42)
@@ -175,7 +188,8 @@ shape(s, 7.38, 2.71, 5.28, 3.72, "panel", rounded=True)
 text(s, "고객의 같은 요청", 7.75, 3.05, 4.51, .48, 20, "lighttext", align=PP_ALIGN.CENTER)
 text(s, "2회 → 주문 1건", 7.72, 3.83, 4.61, .88, 34, "mint", True, PP_ALIGN.CENTER)
 text(s, "실제 CLI 실행 영상으로 확인합니다.", 7.79, 5.18, 4.43, .69, 19, "white", align=PP_ALIGN.CENTER)
-notes(s, "CXO 오프닝: 오늘은 개발 도구의 기능 목록보다 팀의 실행 여력을 어떻게 확장할지 "
+notes(s, "CXO 오프닝: 먼저 GitHub Copilot이 무엇인지, 어디서 사용하고 어떤 방식으로 "
+      "작업을 맡길 수 있는지 짧게 소개합니다. 이어 팀의 실행 여력을 어떻게 확장할지 "
       "보겠습니다. 반복 작업을 AI에 맡기고 개발자는 중요한 결정에 집중하는 방식입니다. "
       "생산성, 가치 전달 속도, 품질과 통제의 잠재 가치를 실제 고객 문제 해결로 보여 줍니다. "
       "같은 인원으로 몇 퍼센트 더 많이 처리했다는 성과는 측정하지 않았으므로 주장하지 않습니다.",
@@ -428,25 +442,168 @@ notes(s, "새 실행은 작업 공간을 덮어쓰지 않으므로 매번 새 ID
 s = new_slide("APPENDIX F / SOURCES & CLAIM BOUNDARIES", "확인한 기능만, 근거와 함께 설명합니다.")
 text(s, "공식 GitHub 문서", .68, 2.7, 5.75, .48, 23, "ink", True)
 sources = [
-    ("Copilot CLI 개요·권한 경계", f"{DOCS}/concepts/agents/about-copilot-cli"),
-    ("CLI 사용 가이드", f"{DOCS}/how-tos/copilot-cli/use-copilot-cli/overview"),
-    ("Custom agents 설정", f"{DOCS}/reference/custom-agents-configuration"),
+    ("GitHub Copilot 제품 개요", INTRO_SOURCES["overview"]),
+    ("IDE의 작업 모드·에이전트", INTRO_SOURCES["ide"]),
+    ("CLI 기능·권한 경계", INTRO_SOURCES["cli"]),
+    ("Cloud agent·비동기 위임", INTRO_SOURCES["cloud"]),
+    ("Agents·Skills·MCP·Hooks", INTRO_SOURCES["customization"]),
     ("도입 활용도·업무 흐름 metrics", f"{DOCS}/concepts/billing-and-usage/copilot-usage-metrics/copilot-metrics"),
 ]
 for i, (label, url) in enumerate(sources):
-    obj = text(s, f"{i+1:02d}  {label} ↗", .73, 3.43 + i * .56, 5.62, .44, 18, "purple")
+    obj = text(s, f"{i+1:02d}  {label} ↗", .73, 3.35 + i * .40, 5.62, .36, 16, "purple")
     obj.click_action.hyperlink.address = url
 text(s, "실행 환경: Copilot CLI 1.0.88\n확인일: 2026-09-26 KST", .73, 6.0, 5.56, .70, 15, "muted")
 shape(s, 6.91, 2.72, 5.74, 3.91, "dark", rounded=True)
 text(s, "이 데모로 보장하지 않는 것", 7.24, 3.08, 5.10, .58, 22, "amber", True)
 text(s, "생산성·매출·비용 개선율\n결함이 전혀 없다는 보장\n재시작·분산 환경·실제 결제 안전성\n인증된 조직 승인·자동 배포",
      7.25, 4.00, 5.06, 1.91, 19, "white")
-notes(s, "공식 문서와 설치된 copilot --help, copilot help permissions를 함께 확인했습니다. "
-      "제품 화면과 키트 보조 기능, 관측 결과와 기대 효과, 리허설 입력과 실제 사람의 승인을 "
-      "구분해서 설명합니다. 승인 입력의 출처는 원본 actions.jsonl에 보존합니다.",
+notes(s, "2026-09-26에 공식 GitHub 문서와 설치된 CLI 도움말을 확인했습니다. "
+      "서두는 제품 전반의 개요이고, 이후 CLI 데모는 실제로 실행한 범위만 보여 줍니다. "
+      "제품 기능과 키트 보조 기능, 관측과 기대 효과, 리허설 입력과 실제 승인을 구분합니다. "
+      "각 서두 슬라이드 노트에는 해당 서피스·모드·기능의 상세 출처가 있습니다.",
       "\n".join(url for _, url in sources) + "\nevidence/VERIFICATION.ko.md")
 
-order = [1, 2, 3, 4, 5, 6, 7, 12, 9, 13, 14, 15, 8, 10, 11, 16, 17, 18]
+existing_order = [1, 2, 3, 4, 5, 6, 7, 12, 9, 13, 14, 15, 8, 10, 11, 16, 17, 18]
+existing_count = len(prs.slides)
+
+# These introductions are placed immediately after the cover.
+s = new_slide("INTRO 01 / WHAT IS GITHUB COPILOT", "GitHub Copilot은,\n소프트웨어 개발을 돕는 AI입니다.",
+              "코드 작성·이해·계획·변경·검토를 기존 개발 흐름 안에서 지원합니다.")
+cards(s, [
+    ("ASSIST", "코드를 제안하고", "입력 중 코드 추천\n질문 답변·코드 설명", "purple"),
+    ("CONTEXT", "맥락을 이해하고", "요청·코드·저장소를 참고\n작업에 필요한 정보 탐색", "green"),
+    ("AGENT", "작업을 실행합니다", "목표를 받아 여러 단계 수행\n변경과 검증 결과를 검토", "purple"),
+])
+text(s, "자동완성만이 아니라, 개발 업무를 함께 수행하는 파트너입니다. 최종 판단은 사람에게 남습니다.",
+     .67, 6.40, 12.0, .42, 16, "ink", True)
+notes(s, "권장 40초. GitHub는 코드와 협업을 관리하는 플랫폼이고 GitHub Copilot은 "
+      "그 개발 흐름에서 코드 작성·이해·출시 준비를 돕는 AI 제품입니다. 자동완성과 대화형 "
+      "보조뿐 아니라 목표를 받고 파일과 도구를 다루는 에이전트 기능도 제공합니다. "
+      "이 제품을 Microsoft 365 Copilot이나 Copilot Studio와 같은 것으로 설명하지 않습니다. "
+      "지원 기능은 플랜·클라이언트·조직 정책에 따라 다르며 모든 서피스가 같은 기능을 "
+      "제공하는 것은 아닙니다. 이 슬라이드는 제품 소개이지 모든 기능의 실행 증거는 아닙니다.",
+      INTRO_SOURCES["overview"])
+
+s = new_slide("INTRO 02 / SURFACES: WHERE YOU USE COPILOT", "필요한 작업을,\n익숙한 접점에서 시작합니다.",
+              "서피스(Surface)는 Copilot을 사용하는 화면·도구입니다.")
+surfaces = [
+    ("IDE", "작성·질문·수정\n열린 프로젝트와\n함께 작업", "VS Code·VS·JetBrains 등"),
+    ("CLI", "터미널에서\n계획·코드 수정\n도구 실행", "이번 데모의 접점"),
+    ("GitHub.com", "저장소·이슈·PR에서\n질문·작업 위임\n변경 검토", "웹 기반 협업"),
+    ("Copilot app", "전용 데스크톱 앱\n프로젝트·에이전트\n세션 관리", "에이전트 작업 공간"),
+    ("GitHub Mobile", "이동 중 저장소 탐색\n코드·PR 질문\n검토 지원", "모바일 접점"),
+]
+for i, (title, body, foot) in enumerate(surfaces):
+    x = .65 + i * 2.44
+    active = title == "CLI"
+    shape(s, x, 2.83, 2.27, 3.19, "dark" if active else "white", None if active else "line", True)
+    text(s, f"0{i+1}", x + .19, 3.07, 1.87, .34, 15, "mint" if active else "purple", True)
+    text(s, title, x + .19, 3.62, 1.91, .43, 19, "white" if active else "ink", True)
+    text(s, body, x + .19, 4.32, 1.89, 1.02, 14, "lighttext" if active else "muted")
+    text(s, foot, x + .19, 5.53, 1.89, .33, 10.5, "mint" if active else "muted", True)
+text(s, "CLI는 여러 접점 중 하나입니다. 지원 기능은 클라이언트·버전·플랜·조직 정책에 따라 다릅니다.",
+     .67, 6.42, 12.0, .38, 14, "ink", True)
+notes(s, "권장 45초. 서피스는 사용 접점, 작업 모드는 도움을 받는 방식, 실행 환경은 도구가 "
+      "실제로 동작하는 위치입니다. 서로 같은 분류가 아닙니다. IDE에는 VS Code, Visual Studio, "
+      "JetBrains 등이 있으며 세부 지원은 feature matrix를 봅니다. GitHub.com에서는 저장소 "
+      "대화, Cloud agent 위임, PR 검토 등을 사용할 수 있습니다. Copilot app은 별도 데스크톱 "
+      "제품으로 프로젝트와 에이전트 세션을 관리하며 GitHub Desktop과 혼동하지 않습니다. "
+      "GitHub Mobile은 저장소·코드·PR 질문과 지원되는 검토 기능을 제공합니다. "
+      "앱과 CLI의 조직 정책도 별도일 수 있습니다. 이 데모는 강조한 CLI만 실제 실행했습니다.",
+      "\n".join(INTRO_SOURCES[key] for key in ["overview", "matrix", "cli", "app", "mobile", "review"]))
+
+s = new_slide("INTRO 03 / MODES: HOW YOU WORK", "작업에 맞게,\n질문·계획·수정·실행을 선택합니다.")
+for i, (mode, title, body, color) in enumerate([
+    ("Ask", "질문과 이해", "코드 설명·탐색\n접근 방법 상담", "purple"),
+    ("Plan", "구현 전 계획", "요구·범위·단계 정리\n계획을 보고 구현 결정", "green"),
+    ("Agent", "목표 기반 실행", "파일 수정·명령 실행\n결과를 보고 반복", "purple"),
+    ("Edit*", "선택 범위 수정", "지정한 파일을 중심으로\n변경안을 제안·적용", "muted"),
+]):
+    x = .65 + i * 3.10
+    shape(s, x, 2.70, 2.78, 2.10, "white", "line", True)
+    text(s, mode, x + .21, 2.93, 2.35, .43, 23, color, True)
+    text(s, title, x + .21, 3.53, 2.35, .38, 18, "ink", True)
+    text(s, body, x + .21, 4.08, 2.35, .62, 14, "muted")
+text(s, "CLI", .71, 5.19, .87, .43, 22, "purple", True)
+for i, (mode, body) in enumerate([
+    ("Interactive", "대화하며 실행"),
+    ("Plan", "구현 전에 계획"),
+    ("Autopilot", "여러 단계를 연속 진행"),
+]):
+    x = 1.83 + i * 3.66
+    shape(s, x, 5.02, 3.44, .96, "pale", rounded=True)
+    text(s, mode, x + .17, 5.15, 3.08, .34, 17, "ink", True)
+    text(s, body, x + .17, 5.60, 3.08, .25, 12.5, "muted")
+text(s, "모드명·제공 범위는 클라이언트별로 다릅니다. Edit*은 지원 IDE·버전에 한정됩니다.",
+     .69, 6.20, 12.0, .30, 12.5, "muted")
+text(s, "연속 진행과 도구 권한은 별도입니다. 이번 녹화는 Interactive + 수동 편집 승인입니다.",
+     .69, 6.57, 12.0, .30, 13, "ink", True)
+notes(s, "권장 60초. 위 네 카드는 IDE에서 접하는 대표 작업 방식이며 모든 클라이언트에 "
+      "동일한 메뉴가 있다는 뜻은 아닙니다. 현재 GitHub의 VS Code 사용 가이드는 Ask·Plan·Agent를 "
+      "소개합니다. Edit은 feature matrix에 나온 지원 IDE·버전에서 선택 파일을 중심으로 "
+      "수정하는 방식이므로 별표로 한정했습니다. CLI는 대화형과 프로그램 방식 인터페이스를 "
+      "제공하며, 대화형 작업에서 Interactive·Plan·Autopilot을 구분할 수 있습니다. "
+      "Autopilot은 완료나 제한에 이를 때까지 이어서 작업하는 모드이지 권한 무제한과 같은 "
+      "옵션이 아닙니다. 제한된 권한으로 계속하면 승인이 필요한 작업이 거부될 수 있고, "
+      "넓은 권한 부여에는 별도의 위험 검토가 필요합니다. 이 데모는 Autopilot을 사용하지 "
+      "않았습니다. 영상의 demo-planner는 사용자 정의 역할이지 내장 Plan 모드를 켠 증거가 아닙니다.",
+      "\n".join(INTRO_SOURCES[key] for key in ["ide", "matrix", "cli", "autopilot"]))
+
+s = new_slide("INTRO 04 / AGENT-POWERED WORK", "에이전트는 목표를 받아,\n개발 작업을 여러 단계로 수행합니다.", dark=True)
+cards(s, [
+    ("AGENT MODE / CLI", "구현·검증을 위임", "소스 탐색·여러 파일 수정\n도구 실행·테스트와 재시도", "lilac"),
+    ("CLOUD AGENT", "백그라운드에 위임", "GitHub에서 조사·계획·변경\n필요하면 PR로 전달", "mint"),
+    ("COPILOT CODE REVIEW", "변경을 다시 검토", "IDE·PR의 변경을 검토\n문제와 개선안 제안", "lilac"),
+], dark=True, height=3.08)
+text(s, "IDE의 Agent mode와 Cloud agent는 별개입니다. AI의 검토 의견은 출시 승인이 아닙니다.",
+     .69, 6.12, 12.0, .34, 14, "white", True)
+text(s, "이번 시연: CLI의 Custom agent + 로컬 테스트. Cloud 위임·PR 리뷰 서비스는 소개만 합니다.",
+     .69, 6.58, 12.0, .30, 12.5, "lighttext")
+notes(s, "권장 50초. Agent mode나 CLI는 개발 환경에서 파일과 도구를 사용해 목표를 해결할 "
+      "수 있습니다. Cloud agent는 GitHub의 별도 실행 환경에서 백그라운드로 조사·계획·변경을 "
+      "수행하고 필요할 때 PR을 만드는 서비스입니다. IDE의 Agent mode와 같은 이름의 모드로 "
+      "묶지 않습니다. GitHub의 현재 명칭은 Copilot cloud agent이며 이전 coding agent 명칭을 "
+      "아는 참석자에게는 같은 제품의 현재 명칭으로 설명합니다. Copilot code review는 "
+      "변경 맥락을 모아 문제와 개선안을 제안하는 제품 기능이며 검토를 사람의 승인으로 "
+      "해석하지 않습니다. 이번 영상은 세 역할의 CLI 실행을 로컬 파일로 인계한 사례입니다. "
+      "테스트는 로컬 컨트롤러가 실행했고 demo-reviewer는 사용자 정의 읽기 전용 역할입니다. "
+      "Cloud agent나 GitHub의 PR code review 서비스를 실제로 실행한 데모는 아닙니다.",
+      "\n".join(INTRO_SOURCES[key] for key in ["ide", "cli", "cloud", "review"]))
+
+s = new_slide("INTRO 05 / TEAM-READY AGENT FEATURES", "우리 팀의 역할·도구·절차에 맞춰\n에이전트를 확장할 수 있습니다.")
+features = [
+    ("팀의 기준을 공유", "Instructions / Prompt files", "규칙과 반복 요청을 재사용"),
+    ("역할을 전문화", "Custom agents", "담당 역할·지침·도구를 구성"),
+    ("작업을 나눠 수행", "Subagents / Fleet", "하위 작업 위임·가능한 부분 병렬화"),
+    ("업무 절차를 재사용", "Agent skills", "필요할 때 절차·스크립트·자료 로드"),
+    ("외부 도구와 연결", "MCP servers", "이슈·문서·브라우저 등의 도구 연결"),
+    ("실행 지점에 통제", "Hooks", "도구 실행 전후 검사·기록"),
+]
+for i, (title, feature, body) in enumerate(features):
+    x = .65 + (i % 3) * 4.15
+    y = 2.65 + (i // 3) * 1.68
+    shape(s, x, y, 3.86, 1.48, "white", "line", True)
+    text(s, title, x + .23, y + .18, 3.37, .41, 20, "ink", True)
+    text(s, feature, x + .24, y + .72, 3.36, .27, 12, "purple", True, font="Arial")
+    text(s, body, x + .24, y + 1.12, 3.36, .26, 12.5, "muted")
+shape(s, .66, 6.17, 12.04, .57, "pale", rounded=True)
+text(s, "이번 사용: 저장소 지침·Custom agents·편집 승인  |  그 외 확장 기능은 제품 소개이며 미시연",
+     .89, 6.31, 11.57, .30, 13, "ink", True)
+notes(s, "권장 60초. Custom instructions는 작업 맥락에 적용할 기준이고 Prompt files는 "
+      "반복 요청 템플릿입니다. Prompt files를 CLI 공통 기능이라고 말하지 않으며 지원 "
+      "클라이언트를 확인합니다. Custom agents는 역할·도구 구성이며 Subagents는 별도 "
+      "맥락에서 하위 작업을 수행하는 실행 단위입니다. CLI의 Fleet는 병렬 가능한 작업을 "
+      "subagents에 나누는 기능으로, 에이전트 수가 늘면 항상 빨라진다고 보장하지 않습니다. "
+      "Skills는 관련 업무의 절차·스크립트·자료를 필요할 때 로드합니다. MCP는 외부 도구와 "
+      "데이터에 연결하고 Hooks는 실행 지점에서 검사·기록·정책 동작을 수행하도록 확장합니다. "
+      "지원 범위는 클라이언트·버전·정책에 따라 다르고 지침 자체가 보안 격리를 보장하지는 "
+      "않습니다. 이번 촬영은 저장소 지침, 세 Custom agent 프로필, 네이티브 편집 승인을 "
+      "사용했습니다. Fleet·Subagents·Skills·MCP·Hooks를 시연한 것으로 설명하지 않습니다. "
+      "이제 이 제품 소개를 바탕으로 다음 CXO 가치와 실제 CLI 사례로 연결합니다.",
+      "\n".join(INTRO_SOURCES[key] for key in ["customization", "fleet", "ide"]))
+
+introduction_count = len(prs.slides) - existing_count
+order = [existing_order[0], *range(existing_count + 1, len(prs.slides) + 1), *existing_order[1:]]
 slide_ids = list(prs.slides._sldIdLst)
 for number in order:
     prs.slides._sldIdLst.append(slide_ids[number - 1])
@@ -461,8 +618,15 @@ prs.save(target)
 audit = {
     "slides": len(prs.slides),
     "audience": "CXO customers",
-    "main_slides": 12,
+    "main_slides": len(prs.slides) - 6,
     "technical_appendix_slides": 6,
+    "introduction": {
+        "slide_numbers": list(range(2, introduction_count + 2)),
+        "topics": ["Copilot definition", "Surfaces", "Modes", "Agent-powered work", "Agent customization"],
+        "sources_verified_on": "2026-09-26",
+        "sources": INTRO_SOURCES,
+    },
+    "demo_video_slide": existing_order.index(7) + introduction_count + 1,
     "all_have_notes": all(bool(slide.notes_slide.notes_text_frame.text.strip()) for slide in prs.slides),
     "source_digest": STATE["verification"]["sourceDigest"],
     "cli_run": CAPTURE["runId"],

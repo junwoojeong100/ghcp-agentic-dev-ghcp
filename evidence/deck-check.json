@@ -1,6 +1,6 @@
 {
-  "pptxSlides": 18,
-  "pdfPages": 18,
+  "pptxSlides": 23,
+  "pdfPages": 23,
   "missingText": [],
   "outsidePage": [],
   "notes": [
@@ -21,7 +21,40 @@
     true,
     true,
     true,
+    true,
+    true,
+    true,
+    true,
+    true,
     true
   ],
+  "introductionChecks": [
+    {
+      "slide": 2,
+      "missing": [],
+      "officialSourcesInNotes": true
+    },
+    {
+      "slide": 3,
+      "missing": [],
+      "officialSourcesInNotes": true
+    },
+    {
+      "slide": 4,
+      "missing": [],
+      "officialSourcesInNotes": true
+    },
+    {
+      "slide": 5,
+      "missing": [],
+      "officialSourcesInNotes": true
+    },
+    {
+      "slide": 6,
+      "missing": [],
+      "officialSourcesInNotes": true
+    }
+  ],
+  "structureErrors": [],
   "passed": true
 }

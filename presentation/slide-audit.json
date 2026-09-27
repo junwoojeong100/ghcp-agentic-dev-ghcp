@@ -1,8 +1,39 @@
 {
-  "slides": 18,
+  "slides": 23,
   "audience": "CXO customers",
-  "main_slides": 12,
+  "main_slides": 17,
   "technical_appendix_slides": 6,
+  "introduction": {
+    "slide_numbers": [
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "topics": [
+      "Copilot definition",
+      "Surfaces",
+      "Modes",
+      "Agent-powered work",
+      "Agent customization"
+    ],
+    "sources_verified_on": "2026-09-26",
+    "sources": {
+      "overview": "https://docs.github.com/en/copilot/get-started/about-github-copilot",
+      "ide": "https://docs.github.com/en/copilot/how-tos/chat-with-copilot/chat-in-ide",
+      "matrix": "https://docs.github.com/en/copilot/reference/copilot-feature-matrix",
+      "cli": "https://docs.github.com/en/copilot/concepts/agents/copilot-cli/about-copilot-cli",
+      "autopilot": "https://docs.github.com/en/copilot/concepts/agents/copilot-cli/autopilot",
+      "app": "https://docs.github.com/en/copilot/get-started/quickstart-copilot-app",
+      "mobile": "https://docs.github.com/en/copilot/how-tos/copilot-on-github/chat-with-copilot/chat-in-mobile",
+      "cloud": "https://docs.github.com/en/copilot/concepts/agents/cloud-agent/about-cloud-agent",
+      "review": "https://docs.github.com/en/copilot/concepts/agents/code-review",
+      "customization": "https://docs.github.com/en/copilot/reference/customization-cheat-sheet",
+      "fleet": "https://docs.github.com/en/copilot/how-tos/copilot-cli/use-copilot-cli/speed-up-task-completion"
+    }
+  },
+  "demo_video_slide": 12,
   "all_have_notes": true,
   "source_digest": "3a35b30aa84720f645f3637e01316f2921393d9d44708623799dcf5001482e9e",
   "cli_run": "cli-take-02",

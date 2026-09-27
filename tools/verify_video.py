@@ -58,8 +58,8 @@ loudness = json.loads(match.group())
 assert -30 < float(loudness["input_i"]) < -10, loudness
 assert float(loudness["input_tp"]) < 0, loudness
 
-preview = VIDEO / "preview"
-preview.mkdir(exist_ok=True)
+preview = VIDEO / "work" / "preview"
+preview.mkdir(parents=True, exist_ok=True)
 times = [3, 29, 61, 90, 115, 147, 183, 202, 229, 258, 278, 294]
 thumbs = []
 for i, timestamp in enumerate(times, 1):
@@ -76,7 +76,7 @@ for first in range(0, len(thumbs), 6):
     sheet = Image.new("RGB", (1980, 794), "#dce2ec")
     for i, thumb in enumerate(thumbs[first:first+6]):
         sheet.paste(thumb, ((i % 3) * 660, (i // 3) * 397))
-    sheet.save(VIDEO / f"contact-sheet-{first//6+1}.png")
+    sheet.save(preview / f"contact-sheet-{first//6+1}.png")
 report = {
     "passed": True, "durationSeconds": duration, "resolution": [video["width"], video["height"]],
     "videoCodec": video["codec_name"], "pixelFormat": video["pix_fmt"],

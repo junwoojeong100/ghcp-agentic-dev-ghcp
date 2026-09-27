@@ -7,9 +7,9 @@
 
 Copilot의 가치를 저장소 맥락 이해, 실제 코드 변경, 승인 기반 통제, 검토 가능한
 결과로 설명한다. 코드를 많이 만들었다거나 몇 퍼센트 빨라졌다는 수치는 사용하지
-않는다. 발표 자료는 **경영진 본편 12장 + 기술 부록 6장**, 영상은 5분이다.
-CLI 명령어와 코드 설명은 질문이 있을 때 부록에서만 다룬다.
-권장 발표 15~20분에 영상 5분을 더하되
+않는다. 발표 자료는 **서두 소개 5장을 포함한 경영진 본편 17장 + 기술 부록 6장**,
+총 23장이다. 영상은 기존 5분을 유지한다. CLI 명령어와 코드 설명은 질문이 있을 때
+부록에서만 다룬다. 서두 소개 약 4분을 포함해 권장 발표 20~25분에 영상 5분을 더하되
 이 시간은 제품 성능 지표가 아니다.
 
 이번 영상은 실제 Copilot CLI 프로세스의 터미널 출력이다. 별도 HTML에서 가짜
@@ -19,10 +19,30 @@ CLI 명령어와 코드 설명은 질문이 있을 때 부록에서만 다룬다
 
 ## 1. 가장 안정적인 발표
 
-`presentation/GitHub-Copilot-Agentic-Development.pptx`를 사용하고 7번 슬라이드에서
+`presentation/GitHub-Copilot-Agentic-Development.pptx`를 사용하고 12번 슬라이드에서
 `video/Agentic-Development-Demo-KO.mp4`로 전환한다. 음량과 한국어 자막을 먼저
 확인한다. PPT의 노트에는 발표 대사와 출처, 관측과 주장 사이의 경계가 들어 있다.
 Office나 폰트 문제가 있으면 같은 이름의 PDF를 사용한다.
+
+### 표지 다음의 제품 소개
+
+| 슬라이드 | 주제 | CXO에게 전달할 핵심 |
+| --- | --- | --- |
+| 2 | GitHub Copilot이란 | 자동완성·질문 답변부터 개발 작업 실행까지 지원하는 AI |
+| 3 | 사용 서피스 | IDE, CLI, GitHub.com, Copilot app, GitHub Mobile은 사용 접점 |
+| 4 | 작업 모드 | Ask·Plan·Agent·지원 환경의 Edit; CLI의 Interactive·Plan·Autopilot은 따로 설명 |
+| 5 | 에이전트 활용 | 구현·검증, Cloud agent 비동기 위임, Copilot code review |
+| 6 | 팀별 확장 | Instructions/Prompts, Custom agents, Subagents/Fleet, Skills, MCP, Hooks |
+
+각 노트에 공식 GitHub 출처와 지원 범위가 있다. **서피스·모드·실행 환경을 같은
+분류로 섞지 않는다.** 모든 클라이언트가 같은 모드와 기능을 제공하지 않으며,
+Edit은 지원 IDE·버전에서만 소개한다. Autopilot의 연속 진행과 도구 권한 부여도
+별개다. 영상의 `demo-planner`는 Custom agent 역할이지 내장 Plan 모드 실행이 아니다.
+
+이 5장은 **제품 전반의 소개**다. 이번 실제 시연은 CLI의 저장소 지침·역할 프로필·
+수동 편집 승인과 로컬 테스트다. Cloud agent·PR code review 서비스·Fleet·Skills·
+MCP·Hooks까지 실행한 것으로 설명하지 않는다. 7번부터 기존 CXO 가치·고객 문제
+이야기를 이어가고, 12번에서 영상으로 전환한다.
 
 | 영상 구간 | 실제 화면 | 강조할 Copilot의 이점 |
 | --- | --- | --- |

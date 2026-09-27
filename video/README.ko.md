@@ -75,3 +75,10 @@ python3 presentation/build_slides.py
 터미널 렌더링 단계는 슬라이드용 실제 CLI 스크린샷도 생성한다. 브라우저 녹화는
 최종 CLI 소스와 해시가 다르거나 실제 주문 결과가 다르면 실패한다.
 상세 검증·PDF 변환·패키지 근거는 `../evidence/VERIFICATION.ko.md`에 있다.
+
+`video/work/`는 음성·합성 중간 파일과 확인용 프레임의 재생성 가능한 캐시다.
+`tools/verify_video.py`의 프레임·모아보기는 `video/work/preview/`에,
+슬라이드 검증의 PNG·모아보기는 `presentation/rendered/`에 생성된다.
+두 캐시 경로는 Git과 ZIP에서 제외한다. 캐시 정리 후에는 위 명령의
+`--audio-only`부터 다시 실행한다. `video/terminal/`의 원본과 `recordings/`의
+제작 입력, 최종 MP4·자막은 캐시로 취급하지 않는다.

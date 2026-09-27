@@ -4,6 +4,8 @@
 
 발표 본편은 **개발 생산성·가치 전달 속도·품질 리스크·통제 가능한 AI 도입**을
 중심으로 구성하고, 기술 상세는 부록으로 분리했습니다.
+서두에는 **Copilot이 무엇인지, 사용 서피스, 작업 모드, 에이전트 활용·확장 기능**을
+소개하는 5장을 추가했습니다. 전체는 **23장: 경영진 본편 17장 + 기술 부록 6장**입니다.
 실제 GitHub Copilot CLI가 저장소를 읽고, 계획을 만들고, **네이티브 파일 편집
 승인창**을 거쳐 코드를 수정하는 발표·데모 키트입니다. 별도로 만든 대시보드를
 Copilot 제품 화면처럼 보여 주지 않습니다.
@@ -17,6 +19,12 @@ Copilot 제품 화면처럼 보여 주지 않습니다.
 | 실연·발표 대사·복구 절차 | `DEMO-GUIDE.ko.md` |
 | 원본 터미널 출력·입력 출처 | `video/terminal/` |
 | 실제 실행 범위·한계 | `evidence/VERIFICATION.ko.md` |
+
+표지 다음 2~6장은 제품 개요입니다. IDE·CLI·GitHub.com·Copilot app·GitHub Mobile,
+Ask·Plan·Agent·지원 환경의 Edit 및 CLI의 Interactive·Plan·Autopilot을 구분합니다.
+Cloud agent, Copilot code review, Custom agents, Subagents/Fleet, Skills, MCP,
+Hooks의 소개와 **이번 영상에서 실제 사용한 기능**도 구분합니다. 발표자 노트에
+공식 출처와 클라이언트별 지원 차이를 적었습니다. 기존 5분 영상은 변경하지 않았습니다.
 
 영상은 **실제 CLI 프로세스의 PTY 출력**을 녹화해 편집했습니다. 터미널 렌더러는
 원본 출력을 재생할 뿐, 에이전트 응답이나 승인 UI를 만들어 넣지 않습니다.
@@ -104,3 +112,8 @@ node tools/render-terminal.mjs --run cli-take-02 --serve
 슬라이드는 `python-pptx`·Pillow, PDF는 LibreOffice, 영상은 FFmpeg·macOS Yuna 음성을
 사용합니다. 자세한 녹화·재작업·재제작 절차는 `DEMO-GUIDE.ko.md`와
 `video/README.ko.md`에 있습니다.
+
+미리보기·중간 캐시는 배포 파일이 아닙니다. 슬라이드 확인용 PNG와 모아보기는
+`presentation/rendered/`, 영상 확인용 프레임은 `video/work/preview/`에 생성되며
+Git과 발표 키트 ZIP에서 제외됩니다. `demo/runs/`는 재실연 시 만드는 작업폴더입니다.
+완성된 발표 파일, `video/terminal/`의 실제 CLI 원본, 저장본의 검증 기록은 보존합니다.

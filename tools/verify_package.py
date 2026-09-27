@@ -28,6 +28,11 @@ with tempfile.TemporaryDirectory(prefix="agentic-kit-check-") as folder:
     assert not (kit / "node_modules").exists()
     assert not (demo / "runs").exists()
     assert not (demo / "cli-reference/.demo/cli-home").exists()
+    assert not (kit / "presentation/rendered").exists()
+    assert not (kit / "video/work").exists()
+    assert not (kit / "video/preview").exists()
+    for folder in ["presentation", "video"]:
+        assert not list((kit / folder).glob("contact-sheet-*.png"))
     manifest = json.loads((kit / "evidence/artifact-manifest.json").read_text())
     for name, expected in manifest["files"].items():
         assert hashlib.sha256((kit / name).read_bytes()).hexdigest() == expected, name

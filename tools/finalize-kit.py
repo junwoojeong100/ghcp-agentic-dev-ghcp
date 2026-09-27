@@ -11,6 +11,7 @@ state = read("demo/cli-reference/.demo/state.json")
 browser = read("evidence/browser-check.json")
 control = read("evidence/control-check.json")
 deck = read("evidence/deck-check.json")
+deck_structure = read("presentation/slide-audit.json")
 video = read("evidence/video-check.json")
 terminal = read("evidence/terminal-check.json")
 first = read("demo/cli-reference/.demo/history/iteration-01/state.json")
@@ -24,6 +25,7 @@ assert state["verification"]["passed"] and state["verification"]["browserVerifie
 assert state["review"]["recommendation"] == "READY_FOR_HUMAN_REVIEW"
 assert state["decision"] is None
 assert all(report["passed"] for report in [browser, control, deck, video, terminal])
+assert deck["pptxSlides"] == deck_structure["main_slides"] + deck_structure["technical_appendix_slides"]
 assert browser["sourceDigest"] == source == terminal["sourceDigest"] == video["sourceDigest"]
 assert first["verification"]["passed"] and not first["browserVerification"]["passed"]
 assert not second["verification"]["passed"]
@@ -43,7 +45,13 @@ body = f"""# 검증 기록 · CXO 브리핑과 실제 Copilot CLI
 ## 결론
 
 CXO 고객을 위한 GitHub Copilot 발표를 개발 생산성, 가치 전달 속도, 품질 리스크,
-통제 가능한 AI 도입 중심으로 구성했다. **경영진 본편 12장 + 기술 부록 6장**이다.
+통제 가능한 AI 도입 중심으로 구성했다. **경영진 본편 {deck_structure['main_slides']}장 +
+기술 부록 {deck_structure['technical_appendix_slides']}장**이다.
+표지 다음 {len(deck_structure['introduction']['slide_numbers'])}장은 Copilot의 정의·서피스·
+작업 모드·에이전트 활용·확장 기능을 소개한다. 각 슬라이드 노트의 공식 출처와
+클라이언트별 지원 차이를 확인했으며, 영상 전환은 {deck_structure['demo_video_slide']}번이다.
+제품 전반의 소개와 실제 CLI 시연 범위를 구분한다. 이번 서두 추가에서 기존 영상과
+실행 소스는 변경하지 않았다.
 기대하는 사업 가치와 실제 관찰한 작업 위임·승인·결과를 구분한다.
 조직의 생산성·매출·비용 절감률이나 ROI를 측정한 실험은 아니다.
 
@@ -179,6 +187,11 @@ python3 tools/verify_package.py
 실제 결제 연동은 별도 검증이 필요하다. 테스트와 AI 검토는 결함 부재의 보증이 아니다.
 
 - [GitHub Copilot CLI](https://docs.github.com/en/copilot/concepts/agents/copilot-cli/about-copilot-cli)
+- [GitHub Copilot 개요](https://docs.github.com/en/copilot/get-started/about-github-copilot)
+- [IDE 작업 모드](https://docs.github.com/en/copilot/how-tos/chat-with-copilot/chat-in-ide)
+- [Copilot app](https://docs.github.com/en/copilot/get-started/quickstart-copilot-app)
+- [Cloud agent](https://docs.github.com/en/copilot/concepts/agents/cloud-agent/about-cloud-agent)
+- [에이전트 확장 기능 비교](https://docs.github.com/en/copilot/reference/customization-cheat-sheet)
 - [Custom agents](https://docs.github.com/en/copilot/reference/custom-agents-configuration)
 - [Copilot usage metrics](https://docs.github.com/en/copilot/concepts/billing-and-usage/copilot-usage-metrics/copilot-metrics)
 - 설치된 `copilot --help`, `copilot help permissions`, `copilot help config`
